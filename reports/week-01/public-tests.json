@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "week": 1,
   "mode": "public",
-  "commitSha": "f653ee640e256aa98863f08a63271d11656bc477",
-  "evaluatedAt": "2026-09-07T05:08:11.658893+00:00",
-  "status": "fail",
+  "commitSha": "1d9b52abb34b0df7749264ca4ff0c13f09b27a54",
+  "evaluatedAt": "2026-09-07T05:37:51.837992+00:00",
+  "status": "pass",
   "checks": [
     {
       "id": "base_files",
@@ -38,13 +38,13 @@
     },
     {
       "id": "schema:reports/week-01/baseline.json",
-      "status": "fail",
-      "detail": "commitSha must be HEAD or its direct evidence-only parent"
+      "status": "pass",
+      "detail": "2 checks indexed, 1 boundary/failure; evidence-only commit; invalid changes=[]"
     },
     {
       "id": "schema:evidence/week-01/engineering.json",
-      "status": "fail",
-      "detail": "commitSha must be HEAD or its direct evidence-only parent"
+      "status": "pass",
+      "detail": "decision evidence is substantive and reproducible; evidence-only commit; invalid changes=[]"
     },
     {
       "id": "schema:evidence/week-01/individual.json",
