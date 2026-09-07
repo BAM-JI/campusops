@@ -1,41 +1,40 @@
 {
-  "_instructions": "Eliminen este campo cuando terminen. Conserven exactamente tres integrantes y usen SHA Git completos de commits creados por cada persona.",
   "schemaVersion": 1,
   "week": 1,
-  "teamId": "REEMPLAZAR_CON_ID_DEL_EQUIPO",
+  "teamId": "9A-E02",
   "members": [
     {
-      "studentId": "REEMPLAZAR_INTEGRANTE_1",
-      "commitShas": ["REEMPLAZAR_CON_SHA_COMPLETO"],
-      "files": ["REEMPLAZAR_CON_ARCHIVO_TRABAJADO"],
-      "tests": [],
+      "studentId": "3523110936",
+      "commitShas": ["112a2f25114e2bafbf1a326756969623f4b88984"],
+      "files": ["docs/problem-definition.md"],
+      "tests": ["npm run typecheck"],
       "reviews": [],
-      "prediction": "REEMPLAZAR_CON_LO_QUE_ESPERABA_OBSERVAR",
-      "command": "REEMPLAZAR_CON_EL_COMANDO_EJECUTADO",
-      "observedResult": "REEMPLAZAR_CON_LO_QUE_OCURRIO",
-      "explanation": "REEMPLAZAR_CON_LA_EXPLICACION_TECNICA"
+      "prediction": "Se esperaba que la estructuración del problema, alcance y criterios no introdujera conflictos sintácticos ni afectara la compilación del proyecto.",
+      "command": "npm run typecheck",
+      "observedResult": "Comprobación de tipos completada satisfactoriamente con tsc --noEmit sin advertencias.",
+      "explanation": "La definición del alcance y flujo documental mantiene consistencia con los contratos del sistema sin alterar archivos de código fuente."
     },
     {
-      "studentId": "REEMPLAZAR_INTEGRANTE_2",
-      "commitShas": ["REEMPLAZAR_CON_SHA_COMPLETO"],
-      "files": ["REEMPLAZAR_CON_ARCHIVO_TRABAJADO"],
-      "tests": [],
+      "studentId": "3523110697",
+      "commitShas": ["c9160fd93f25fe35c4f04da31fc2bbbfdea658ec"],
+      "files": ["docs/risk-register.md"],
+      "tests": ["npm run lint"],
       "reviews": [],
-      "prediction": "REEMPLAZAR_CON_LO_QUE_ESPERABA_OBSERVAR",
-      "command": "REEMPLAZAR_CON_EL_COMANDO_EJECUTADO",
-      "observedResult": "REEMPLAZAR_CON_LO_QUE_OCURRIO",
-      "explanation": "REEMPLAZAR_CON_LA_EXPLICACION_TECNICA"
+      "prediction": "Se esperaba registrar los tres riesgos técnicos priorizados respetando los encabezados requeridos y sin generar advertencias de formato.",
+      "command": "npm run lint",
+      "observedResult": "ESLint finalizó limpiamente en todos los módulos sin violaciones de reglas.",
+      "explanation": "La matriz técnica describe probabilidad, impacto y mitigación de concurrencia y telemetría sin desviar la configuración base."
     },
     {
-      "studentId": "REEMPLAZAR_INTEGRANTE_3",
-      "commitShas": ["REEMPLAZAR_CON_SHA_COMPLETO"],
-      "files": ["REEMPLAZAR_CON_ARCHIVO_TRABAJADO"],
-      "tests": [],
+      "studentId": "3522110221",
+      "commitShas": ["ed44abd7d233fcb86d94d7e79f2778ccc9391d78"],
+      "files": ["App.tsx"],
+      "tests": ["npm run test:smoke"],
       "reviews": [],
-      "prediction": "REEMPLAZAR_CON_LO_QUE_ESPERABA_OBSERVAR",
-      "command": "REEMPLAZAR_CON_EL_COMANDO_EJECUTADO",
-      "observedResult": "REEMPLAZAR_CON_LO_QUE_OCURRIO",
-      "explanation": "REEMPLAZAR_CON_LA_EXPLICACION_TECNICA"
+      "prediction": "Se esperaba que la prueba unitaria fallara al alterar App.tsx y volviera a estado aprobatorio tras reparar la causa raíz sin modificar el test.",
+      "command": "npm run test:smoke",
+      "observedResult": "PASS course-tests/smoke.test.tsx con 1 prueba aprobada tras resolver el fallo controlado.",
+      "explanation": "Se verificó el ciclo de diagnóstico aislando la causa del síntoma observable de renderizado en el componente principal."
     }
   ]
 }

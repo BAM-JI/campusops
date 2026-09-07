@@ -1,20 +1,19 @@
 {
-  "_instructions": "Eliminen este campo cuando terminen. Comparen alternativas reales y relacionen la decisión con una comprobación ejecutada.",
   "schemaVersion": 1,
   "week": 1,
-  "commitSha": "REEMPLAZAR_CON_SHA_DEL_COMMIT_DE_CODIGO_Y_DOCUMENTOS",
-  "decision": "REEMPLAZAR_CON_LA_DECISION_DE_ALCANCE_RIESGO_O_ACEPTACION",
+  "commitSha": "c9160fd93f25fe35c4f04da31fc2bbbfdea658ec",
+  "decision": "Adoptar una estrategia de sincronización offline con detección explícita de conflictos sobre el campo compuesto work (assignedTechnicianId + status) y validación de versión base mediante HTTP 409, complementada con Idempotency-Key en cada mutación.",
   "alternatives": [
-    "REEMPLAZAR_CON_PRIMERA_ALTERNATIVA_REAL",
-    "REEMPLAZAR_CON_SEGUNDA_ALTERNATIVA_REAL"
+    "Estrategia Last-Write-Wins (LWW) en la que el último cambio recibido por el servidor sobrescribe el recurso sin evaluar la versión previa ni notificar al usuario.",
+    "Bloqueo pesimista de incidencias que impida a los técnicos operar en áreas sin conexión a menos que adquieran un token de bloqueo exclusivo previo."
   ],
-  "tradeoff": "REEMPLAZAR_CON_EL_BENEFICIO_Y_EL_COSTO_DE_LA_DECISION",
+  "tradeoff": "Se garantiza que una reasignación realizada por coordinación no sea sobrescrita silenciosamente por un técnico desconectado, aceptando la sobrecarga de persistir la intención en la cola local y requerir manejo de conflicto en la interfaz.",
   "requirementIds": ["AC-02", "AC-04"],
   "verification": [
     {
-      "command": "REEMPLAZAR_CON_COMANDO_EJECUTADO",
-      "result": "REEMPLAZAR_CON_RESULTADO_OBSERVADO",
-      "evidence": "REEMPLAZAR_CON_ARCHIVO_REPORTE_O_SALIDA_QUE_LO_DEMUESTRA"
+      "command": "make feedback",
+      "result": "Comprobación integral exitosa: verificación de tipos (tsc), análisis de estilo (lint), prueba de humo aprobada y generación correcta del bundle exportado.",
+      "evidence": "Salida en terminal con código de salida 0: PASS course-tests/smoke.test.tsx y exportación completada sin errores de build."
     }
   ]
 }
