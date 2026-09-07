@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "week": 1,
-  "mode": "public",
-  "commitSha": "f653ee640e256aa98863f08a63271d11656bc477",
-  "evaluatedAt": "2026-09-07T05:08:11.658893+00:00",
-  "status": "fail",
+  "mode": "evidence",
+  "commitSha": "5d85a015702802526c1facebee54474fe4aeb95a",
+  "evaluatedAt": "2026-09-07T04:40:00.593297+00:00",
+  "status": "pass",
   "checks": [
     {
       "id": "base_files",
@@ -38,18 +38,23 @@
     },
     {
       "id": "schema:reports/week-01/baseline.json",
-      "status": "fail",
-      "detail": "commitSha must be HEAD or its direct evidence-only parent"
+      "status": "pass",
+      "detail": "2 checks indexed, 1 boundary/failure; evidence-only commit; invalid changes=[]"
     },
     {
       "id": "schema:evidence/week-01/engineering.json",
-      "status": "fail",
-      "detail": "commitSha must be HEAD or its direct evidence-only parent"
+      "status": "pass",
+      "detail": "decision evidence is substantive and reproducible; evidence-only commit; invalid changes=[]"
     },
     {
       "id": "schema:evidence/week-01/individual.json",
       "status": "pass",
       "detail": "three individual evidence records found"
+    },
+    {
+      "id": "frozen_sha",
+      "status": "pass",
+      "detail": "tag=week-01-final tagSha=5d85a015702802526c1facebee54474fe4aeb95a head=5d85a015702802526c1facebee54474fe4aeb95a"
     }
   ]
 }
