@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "week": 1,
+  "mode": "public",
+  "commitSha": "18561e3ca11e1755c01b771588cab1611fd06870",
+  "evaluatedAt": "2026-09-10T16:53:59.260464+00:00",
+  "status": "fail",
+  "checks": [
+    {
+      "id": "base_files",
+      "status": "pass",
+      "detail": "missing=[]"
+    },
+    {
+      "id": "react_native_profile",
+      "status": "pass",
+      "detail": "missing packages=[]"
+    },
+    {
+      "id": "toolchain_scripts",
+      "status": "pass",
+      "detail": "missing scripts=[]"
+    },
+    {
+      "id": "workflow_integrity",
+      "status": "pass",
+      "detail": "bypass markers=[]"
+    },
+    {
+      "id": "secret_scan",
+      "status": "pass",
+      "detail": "hits=[]"
+    },
+    {
+      "id": "required_evidence",
+      "status": "pass",
+      "detail": "missing/empty=[]"
+    },
+    {
+      "id": "schema:reports/week-01/baseline.json",
+      "status": "fail",
+      "detail": "evidence-only commit; invalid changes=['.github/workflows/week-01-diagnostico-reproducible-feedback.yml']"
+    },
+    {
+      "id": "schema:evidence/week-01/engineering.json",
+      "status": "fail",
+      "detail": "evidence-only commit; invalid changes=['.github/workflows/week-01-diagnostico-reproducible-feedback.yml']"
+    },
+    {
+      "id": "schema:evidence/week-01/individual.json",
+      "status": "pass",
+      "detail": "three individual evidence records found"
+    },
+    {
+      "id": "toolchain_1",
+      "status": "fail",
+      "detail": "npm run typecheck\n[WinError 2] El sistema no puede encontrar el archivo especificado"
+    },
+    {
+      "id": "toolchain_2",
+      "status": "fail",
+      "detail": "npm run lint\n[WinError 2] El sistema no puede encontrar el archivo especificado"
+    },
+    {
+      "id": "toolchain_3",
+      "status": "fail",
+      "detail": "npm run audit:ci\n[WinError 2] El sistema no puede encontrar el archivo especificado"
+    },
+    {
+      "id": "toolchain_4",
+      "status": "fail",
+      "detail": "npm test -- --ci --runInBand course-tests/public/week-01.test.ts\n[WinError 2] El sistema no puede encontrar el archivo especificado"
+    }
+  ]
+}
