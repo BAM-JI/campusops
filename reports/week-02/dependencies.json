@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "week": 2,
+  "commitSha": "3a84d2034c213d282d038963e20a59a4b93e03d9",
+  "generatedAt": "2026-09-10T22:30:00Z",
+  "checks": [
+    {
+      "id": "arch_boundary_ui_to_infra",
+      "status": "fail",
+      "scenarioType": "failure",
+      "command": "npm test -- course-tests/public/week-02.test.ts",
+      "evidence": "Falla controlada detectada: src/ui/IncidentScreens.tsx importaba directamente InMemoryIncidentRepository de infrastructure, violando la regla de limites acordada en ADR-001."
+    },
+    {
+      "id": "arch_boundary_corrected",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm test -- course-tests/public/week-02.test.ts",
+      "evidence": "Correccion aplicada: se elimino la importacion de infraestructura en UI y se inyectaron los casos de uso de application. Verificacion de arquitectura en pass sin acoplamiento indebido."
+    }
+  ]
+}

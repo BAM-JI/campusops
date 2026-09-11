@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "week": 2,
+  "teamId": "team-campusops",
+  "members": [
+    {
+      "studentId": "3523110936",
+      "commitShas": [
+        "d5c8a01aa7e22d64e5a74fc2ed31266d1c43ec2d"
+      ],
+      "files": [
+        "docs/adr/ADR-001-architecture.md",
+        "docs/adr/ADR-002-offline-persistence.md",
+        "docs/adr/ADR-003-conflict-resolution.md",
+        "docs/adr/ADR-004-external-providers.md",
+        "src/domain/incident.ts",
+        "src/application/incident-usecases.ts",
+        ".github/workflows/week-02-arquitectura-justificable-feedback.yml"
+      ],
+      "tests": [
+        "course-tests/public/week-02.test.ts"
+      ],
+      "reviews": [
+        "docs/architecture.mmd"
+      ],
+      "prediction": "Los casos de uso de aplicacion aislaran las entidades del dominio sin requerir modulos de infraestructura externos.",
+      "command": "npm test -- course-tests/public/week-02.test.ts",
+      "observedResult": "pass - arquitectura y ADR cumplen los requisitos del evaluador.",
+      "explanation": "Defini las entidades del dominio y los casos de uso en application; formule la suite completa de ADRs justificando la arquitectura limpia y configure el workflow con fetch-depth: 2."
+    },
+    {
+      "studentId": "3523110697",
+      "commitShas": [
+        "290171b821d1ddbba479c74e6e64242a7b9f6ad6"
+      ],
+      "files": [
+        "docs/architecture.mmd",
+        "src/infrastructure/in-memory-incident.repository.ts",
+        "src/ui/IncidentScreens.tsx"
+      ],
+      "tests": [
+        "course-tests/public/week-02.test.ts"
+      ],
+      "reviews": [
+        "src/domain/incident.ts"
+      ],
+      "prediction": "El diagrama Mermaid representara las 4 capas y no existira arista dirigida entre UI e infraestructura.",
+      "command": "npx jest course-tests/public/week-02.test.ts",
+      "observedResult": "pass - diagrama parseado correctamente sin transgresion de fronteras.",
+      "explanation": "Diseñe el diagrama Mermaid de limites arquitectonicos, implemente el repositorio determinista en memoria para dos incidencias sinteticas y desarrolle los componentes de UI para lista y detalle."
+    },
+    {
+      "studentId": "3522110221",
+      "commitShas": [
+        "3a84d2034c213d282d038963e20a59a4b93e03d9"
+      ],
+      "files": [
+        "reports/week-02/dependencies.json",
+        "evidence/week-02/engineering.json",
+        "evidence/week-02/individual.json"
+      ],
+      "tests": [
+        "make verify-week-02"
+      ],
+      "reviews": [
+        "src/ui/IncidentScreens.tsx"
+      ],
+      "prediction": "La deteccion controlada de imports directos UI a infraestructura reportara falla y pasara tras desacoplar con casos de uso.",
+      "command": "make public-test-week-02",
+      "observedResult": "pass - todos los contratos publicos y limites de dependencias verificados.",
+      "explanation": "Ejecute y documente la contradiccion controlada de limites requerida por AC-03 en dependencies.json y consolide las evidencias del equipo para la entrega final."
+    }
+  ]
+}

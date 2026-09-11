@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "week": 2,
+  "commitSha": "3a84d2034c213d282d038963e20a59a4b93e03d9",
+  "decision": "Adoptar Arquitectura Limpia con Puertos y Adaptadores dividida en UI, Application, Domain e Infrastructure, aislando la interfaz gráfica de la persistencia mediante contratos de repositorio e inyección de casos de uso.",
+  "alternatives": [
+    "Arquitectura MVC acoplada donde los componentes de React Native invocan directamente llamadas HTTP y almacenamiento local mediante hooks.",
+    "Arquitectura Limpia / Puertos y Adaptadores con interfaces estrictas en Domain y repositorios deterministas en Infrastructure."
+  ],
+  "tradeoff": "Se incrementa el número inicial de capas y archivos requeridos para conectar una vista a cambio de desacoplar completamente la infraestructura, permitir pruebas unitarias puras en memoria y reducir a cero el impacto en UI al sustituir proveedores de almacenamiento o geocodificación.",
+  "requirementIds": [
+    "AC-01",
+    "AC-02",
+    "AC-03",
+    "AC-04",
+    "AC-05"
+  ],
+  "verification": [
+    {
+      "command": "npm test -- course-tests/public/week-02.test.ts",
+      "result": "pass",
+      "evidence": "Prueba publica de arquitectura validada: limites ui, application, domain e infrastructure presentes sin conexiones prohibidas en docs/architecture.mmd y ADR-001 coherente."
+    }
+  ]
+}
