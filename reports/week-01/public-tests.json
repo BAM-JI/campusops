@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "week": 1,
   "mode": "public",
-  "commitSha": "1d9b52abb34b0df7749264ca4ff0c13f09b27a54",
-  "evaluatedAt": "2026-09-07T05:37:51.837992+00:00",
-  "status": "pass",
+  "commitSha": "18561e3ca11e1755c01b771588cab1611fd06870",
+  "evaluatedAt": "2026-09-10T16:53:59.260464+00:00",
+  "status": "fail",
   "checks": [
     {
       "id": "base_files",
@@ -38,18 +38,38 @@
     },
     {
       "id": "schema:reports/week-01/baseline.json",
-      "status": "pass",
-      "detail": "2 checks indexed, 1 boundary/failure; evidence-only commit; invalid changes=[]"
+      "status": "fail",
+      "detail": "evidence-only commit; invalid changes=['.github/workflows/week-01-diagnostico-reproducible-feedback.yml']"
     },
     {
       "id": "schema:evidence/week-01/engineering.json",
-      "status": "pass",
-      "detail": "decision evidence is substantive and reproducible; evidence-only commit; invalid changes=[]"
+      "status": "fail",
+      "detail": "evidence-only commit; invalid changes=['.github/workflows/week-01-diagnostico-reproducible-feedback.yml']"
     },
     {
       "id": "schema:evidence/week-01/individual.json",
       "status": "pass",
       "detail": "three individual evidence records found"
+    },
+    {
+      "id": "toolchain_1",
+      "status": "fail",
+      "detail": "npm run typecheck\n[WinError 2] El sistema no puede encontrar el archivo especificado"
+    },
+    {
+      "id": "toolchain_2",
+      "status": "fail",
+      "detail": "npm run lint\n[WinError 2] El sistema no puede encontrar el archivo especificado"
+    },
+    {
+      "id": "toolchain_3",
+      "status": "fail",
+      "detail": "npm run audit:ci\n[WinError 2] El sistema no puede encontrar el archivo especificado"
+    },
+    {
+      "id": "toolchain_4",
+      "status": "fail",
+      "detail": "npm test -- --ci --runInBand course-tests/public/week-01.test.ts\n[WinError 2] El sistema no puede encontrar el archivo especificado"
     }
   ]
 }

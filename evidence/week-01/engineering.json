@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "week": 1,
-  "commitSha": "a6c2fe7381581cdceb927672e58de4e18167721a",
+  "commitSha": "91572a2a2e1c378603699f5fd998c8b46ac9f0e6",
   "decision": "Adoptar una estrategia de sincronización offline con detección explícita de conflictos sobre el campo compuesto work (assignedTechnicianId + status) y validación de versión base mediante HTTP 409, complementada con Idempotency-Key en cada mutación.",
   "alternatives": [
     "Estrategia Last-Write-Wins (LWW) en la que el último cambio recibido por el servidor sobrescribe el recurso sin evaluar la versión previa ni notificar al usuario.",

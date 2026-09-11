@@ -1,0 +1,29 @@
+graph TD
+    subgraph UI["Capa de Interfaz (UI)"]
+        IncidentListScreen["IncidentListScreen"]
+        IncidentDetailScreen["IncidentDetailScreen"]
+    end
+
+    subgraph Application["Capa de Aplicación"]
+        GetIncidentsUseCase["GetIncidentsUseCase"]
+        GetIncidentDetailUseCase["GetIncidentDetailUseCase"]
+    end
+
+    subgraph Domain["Capa de Dominio"]
+        Incident["Entidad: Incident"]
+        IIncidentRepository["Puerto: IIncidentRepository"]
+        SessionBoundary["Límite: Session"]
+        PersistenceBoundary["Límite: Persistence"]
+        LocationBoundary["Límite: LocationProvider"]
+    end
+
+    subgraph Infrastructure["Capa de Infraestructura"]
+        InMemoryIncidentRepo["InMemoryIncidentRepository"]
+    end
+
+    IncidentListScreen --> GetIncidentsUseCase
+    IncidentDetailScreen --> GetIncidentDetailUseCase
+    GetIncidentsUseCase --> IIncidentRepository
+    GetIncidentDetailUseCase --> IIncidentRepository
+    IIncidentRepository --> Incident
+    InMemoryIncidentRepo -.->|implementa| IIncidentRepository
