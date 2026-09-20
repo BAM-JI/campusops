@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "week": 3,
-  "commitSha": "9820917dde97c0ccd8f0c305b95b6024b6c1ffdd",
+  "commitSha": "8bd784042f62401c2944f35bdeb0d05212242152",
   "decision": "Priorizar la mitigacion de exposicion de secretos y el endurecimiento del pipeline de CI con minimo privilegio (permissions: contents: read) antes de integrar persistencia local o servicios de red.",
   "alternatives": [
     "Postergar el escaneo de seguridad hasta la fase de distribucion de la aplicacion movil.",
