@@ -31,4 +31,5 @@ public-test-week-%:
 	$(PYTHON) tools/course_public_evaluator.py --week $* --mode public --execute-toolchain
 
 evidence-week-%:
+    git fetch origin --tags || truegit add Makefile
 	$(PYTHON) tools/course_public_evaluator.py --week $* --mode evidence
