@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "week": 3,
+  "teamId": "team-campusops",
+  "members": [
+    {
+      "studentId": "3523110936",
+      "commitShas": [
+        "dc7f9f4812fbf7b00656983427fb5e83e5419dba"
+      ],
+      "files": [
+        ".github/workflows/week-03-ci-amenazas-feedback.yml",
+        ".github/workflows/week-01-diagnostico-reproducible-feedback.yml",
+        ".github/workflows/week-02-arquitectura-justificable-feedback.yml"
+      ],
+      "tests": [
+        "course-tests/public/week-03.test.ts"
+      ],
+      "reviews": [
+        "docs/threat-model.md"
+      ],
+      "prediction": "El workflow de semana 03 aprobara la validacion de minimo privilegio y descargara los tags necesarios sin fallar en fetch.",
+      "command": "npm test -- course-tests/public/week-03.test.ts",
+      "observedResult": "pass - verificacion de workflow aprobada en CI y entorno local.",
+      "explanation": "Configure el workflow de CI asegurando fetch-depth: 2, permisos contents: read y acote los workflows de semanas anteriores para preservar integridad."
+    },
+    {
+      "studentId": "3523110697",
+      "commitShas": [
+        "9820917dde97c0ccd8f0c305b95b6024b6c1ffdd"
+      ],
+      "files": [
+        "docs/threat-model.md"
+      ],
+      "tests": [
+        "course-tests/public/week-03.test.ts"
+      ],
+      "reviews": [
+        ".github/workflows/week-03-ci-amenazas-feedback.yml"
+      ],
+      "prediction": "El modelo de amenazas vinculara todos los activos con amenazas priorizadas, controles de software y pruebas reproducibles.",
+      "command": "npx jest course-tests/public/week-03.test.ts",
+      "observedResult": "pass - modelo de amenazas contiene todos los conceptos obligatorios evaluados.",
+      "explanation": "Estructure y redacte el modelo de amenazas inicial analizando fronteras de confianza, activos sensibles y controles para asignaciones y telemetria."
+    },
+    {
+      "studentId": "3522110221",
+      "commitShas": [
+        "9820917dde97c0ccd8f0c305b95b6024b6c1ffdd"
+      ],
+      "files": [
+        "reports/week-03/security.json",
+        "evidence/week-03/engineering.json",
+        "evidence/week-03/individual.json"
+      ],
+      "tests": [
+        "make verify-week-03"
+      ],
+      "reviews": [
+        "docs/threat-model.md"
+      ],
+      "prediction": "La comprobacion de falla controlada de permisos quedara registrada en security.json y el etiquetado pasara la verificacion de frozen_sha.",
+      "command": "make public-test-week-03",
+      "observedResult": "pass - reportes y evidencias validadas contra los esquemas de evaluacion.",
+      "explanation": "Documente la falla controlada de seguridad requerida en security.json, consolide las evidencias del equipo y verifique la ejecucion local de make."
+    }
+  ]
+}

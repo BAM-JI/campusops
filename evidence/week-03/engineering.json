@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "week": 3,
+  "commitSha": "9820917dde97c0ccd8f0c305b95b6024b6c1ffdd",
+  "decision": "Priorizar la mitigacion de exposicion de secretos y el endurecimiento del pipeline de CI con minimo privilegio (permissions: contents: read) antes de integrar persistencia local o servicios de red.",
+  "alternatives": [
+    "Postergar el escaneo de seguridad hasta la fase de distribucion de la aplicacion movil.",
+    "Implementar verificacion continua estricta desde el pipeline con escaneo de secretos y permisos restringidos de solo lectura."
+  ],
+  "tradeoff": "Requiere tiempo de configuracion y depuracion estricta del runner en cada ejecucion a cambio de evitar filtracion irreparable de credenciales e impedir que dependencias comprometidas escalen privilegios en el repositorio.",
+  "requirementIds": [
+    "AC-01",
+    "AC-02",
+    "AC-03",
+    "AC-04",
+    "AC-05"
+  ],
+  "verification": [
+    {
+      "command": "npm test -- course-tests/public/week-03.test.ts",
+      "result": "pass",
+      "evidence": "Verificacion publica exitosa; workflow con Node 22, minimo privilegio verificado y modelo de amenazas con conceptos obligatorios."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "week": 3,
+  "commitSha": "9820917dde97c0ccd8f0c305b95b6024b6c1ffdd",
+  "generatedAt": "2026-09-18T22:00:00Z",
+  "checks": [
+    {
+      "id": "sec_ci_overprivileged_permissions",
+      "status": "fail",
+      "scenarioType": "failure",
+      "command": "npm test -- course-tests/public/week-03.test.ts",
+      "evidence": "Falla controlada detectada: el workflow tenia configurado permissions: write-all o carecia del bloque restrictivo, violando la verificacion estricta de minimo privilegio de AC-02."
+    },
+    {
+      "id": "sec_ci_least_privilege_verified",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm test -- course-tests/public/week-03.test.ts",
+      "evidence": "Correccion aplicada: se fijo permissions: contents: read en el workflow y se confirmo que make verify-week-03 y public-test pasan sin errores."
+    }
+  ]
+}
