@@ -4,6 +4,8 @@ name: Week 02 Academic Feedback
 
 on:
   push:
+    tags:
+      - 'week-02-*'
   pull_request:
   workflow_dispatch:
 
