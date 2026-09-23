@@ -4,8 +4,6 @@ name: Week 01 Academic Feedback
 
 on:
   push:
-    tags:
-      - 'week-01-*'
   pull_request:
   workflow_dispatch:
 
