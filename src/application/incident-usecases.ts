@@ -1,10 +1,11 @@
-import { Incident, IIncidentRepository } from '../domain/incident';
+import { Incident, IncidentListItem, IIncidentRepository, toIncidentListItem } from '../domain/incident';
 
 export class GetIncidentsUseCase {
   constructor(private readonly repository: IIncidentRepository) {}
 
-  async execute(): Promise<Incident[]> {
-    return this.repository.getAll();
+  async execute(): Promise<IncidentListItem[]> {
+    const items = await this.repository.getAll();
+    return items.map(toIncidentListItem);
   }
 }
 

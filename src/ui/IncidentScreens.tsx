@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { GetIncidentDetailUseCase, GetIncidentsUseCase } from '../application/incident-usecases';
-import { Incident } from '../domain/incident';
+import { Incident, IncidentListItem } from '../domain/incident';
 
 interface Props {
   getIncidentsUseCase: GetIncidentsUseCase;
@@ -13,7 +13,7 @@ export function IncidentListAndDetailScreen({
   getIncidentsUseCase,
   getIncidentDetailUseCase,
 }: Props) {
-  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [incidents, setIncidents] = useState<IncidentListItem[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
 
   useEffect(() => {
@@ -45,9 +45,7 @@ export function IncidentListAndDetailScreen({
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.card} onPress={() => handleSelect(item.id)}>
               <Text style={styles.itemTitle}>{item.title}</Text>
-              <Text>
-                Estado: {item.status} | {item.location}
-              </Text>
+              <Text>Estado: {item.status}</Text>
             </TouchableOpacity>
           )}
         />
