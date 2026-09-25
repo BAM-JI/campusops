@@ -9,6 +9,9 @@ interface Props {
   getIncidentDetailUseCase: GetIncidentDetailUseCase;
 }
 
+const formatSensitiveField = (value: string | undefined, fallback: string) =>
+  value && value.trim().length > 0 ? fallback : 'No disponible';
+
 export function IncidentListAndDetailScreen({
   getIncidentsUseCase,
   getIncidentDetailUseCase,
@@ -32,8 +35,8 @@ export function IncidentListAndDetailScreen({
           <Text style={styles.title}>Detalle: {selectedIncident.title}</Text>
           <Text>ID: {selectedIncident.id}</Text>
           <Text>Estado: {selectedIncident.status}</Text>
-          <Text>Ubicación: {selectedIncident.location}</Text>
-          <Text>Descripción: {selectedIncident.description}</Text>
+          <Text>Ubicación: {formatSensitiveField(selectedIncident.location, '[ubicación protegida]')}</Text>
+          <Text>Descripción: {formatSensitiveField(selectedIncident.description, '[detalle protegido]')}</Text>
           <TouchableOpacity style={styles.button} onPress={() => setSelectedIncident(null)}>
             <Text style={styles.buttonText}>Regresar a la lista</Text>
           </TouchableOpacity>
@@ -45,9 +48,7 @@ export function IncidentListAndDetailScreen({
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.card} onPress={() => handleSelect(item.id)}>
               <Text style={styles.itemTitle}>{item.title}</Text>
-              <Text>
-                Estado: {item.status} | {item.location}
-              </Text>
+              <Text>Estado: {item.status}</Text>
             </TouchableOpacity>
           )}
         />

@@ -5,9 +5,10 @@ export type BackendHealth = Readonly<{
 }>;
 
 const DEFAULT_URL = 'http://127.0.0.1:4310';
+const COURSE_BACKEND_URL = process.env.EXPO_PUBLIC_COURSE_BACKEND_URL?.trim() || DEFAULT_URL;
 
 export async function getBackendHealth(
-  baseUrl = process.env.EXPO_PUBLIC_COURSE_BACKEND_URL ?? DEFAULT_URL,
+  baseUrl = COURSE_BACKEND_URL,
 ): Promise<BackendHealth> {
   const response = await fetch(`${baseUrl}/health`);
   if (!response.ok) {
