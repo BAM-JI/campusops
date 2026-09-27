@@ -1,0 +1,24 @@
+{
+  "suite": "negative-and-edge-cases",
+  "executedAt": "2026-09-26T21:35:00.000Z",
+  "passed": 4,
+  "failed": 0,
+  "cases": [
+    {
+      "name": "redactForTelemetry handles null and primitives safely",
+      "status": "PASSED"
+    },
+    {
+      "name": "redactForTelemetry masks nested sensitive objects and arrays",
+      "status": "PASSED"
+    },
+    {
+      "name": "unauthorized request rejection without token disclosure",
+      "status": "PASSED"
+    },
+    {
+      "name": "malformed authorization header handling",
+      "status": "PASSED"
+    }
+  ]
+}

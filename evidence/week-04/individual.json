@@ -1,0 +1,20 @@
+[
+  {
+    "studentId": "3523110936",
+    "name": "Abraham Cervantes Romero",
+    "role": "Implementacion de sanitizacion para telemetria",
+    "commitSha": "17e36dae3b80d426a8761fd36c4c5cc46e942ac7"
+  },
+  {
+    "studentId": "3523110940",
+    "name": "Emmanuel Castro Salvador",
+    "role": "Documentacion tecnica de controles de seguridad y analisis de riesgos",
+    "commitSha": "4658d038e0af11c072c37ffe7a326f99c0278f74"
+  },
+  {
+    "studentId": "3523110938",
+    "name": "Danna Lizbeth Castañeda Sánchez",
+    "role": "Consolidacion de reportes, pruebas negativas y estructuracion de evidencias",
+    "commitSha": "HEAD"
+  }
+]

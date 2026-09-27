@@ -1,0 +1,15 @@
+{
+  "decision": "Adopcion de expo-secure-store para tokens y credenciales de sesion",
+  "alternatives": [
+    "AsyncStorage en texto plano sin cifrado",
+    "Cifrado manual con SQLite y llaves gestionadas en codigo"
+  ],
+  "tradeoff": "Mayor seguridad respaldada por hardware nativo (Keychain / Keystore) a cambio de operacion asincrona y limitacion de almacenamiento a valores de texto plano de tamano moderado",
+  "requirementIds": [
+    "AC-01",
+    "AC-02",
+    "AC-03",
+    "AC-04",
+    "AC-05"
+  ]
+}
