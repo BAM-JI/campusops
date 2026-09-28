@@ -1,24 +1,19 @@
 {
+  "schemaVersion": 1,
+  "week": 4,
+  "commitSha": "a26b0a49908a6b094df6b3fe686e411c0f6bb549",
+  "generatedAt": "2026-09-28T15:00:00.000Z",
+  "status": "pass",
   "suite": "negative-and-edge-cases",
-  "executedAt": "2026-09-26T21:35:00.000Z",
   "passed": 4,
   "failed": 0,
-  "cases": [
+  "checks": [
     {
-      "name": "redactForTelemetry handles null and primitives safely",
-      "status": "PASSED"
-    },
-    {
-      "name": "redactForTelemetry masks nested sensitive objects and arrays",
-      "status": "PASSED"
-    },
-    {
-      "name": "unauthorized request rejection without token disclosure",
-      "status": "PASSED"
-    },
-    {
-      "name": "malformed authorization header handling",
-      "status": "PASSED"
+      "id": "negative_tests",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- course-tests/public/week-04.test.ts",
+      "evidence": "4 passed tests for telemetry redaction and unauthorized request handling"
     }
   ]
 }

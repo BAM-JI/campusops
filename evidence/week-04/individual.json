@@ -1,20 +1,74 @@
-[
-  {
-    "studentId": "3523110936",
-    "name": "Abraham Cervantes Romero",
-    "role": "Implementacion de sanitizacion para telemetria",
-    "commitSha": "17e36dae3b80d426a8761fd36c4c5cc46e942ac7"
-  },
-  {
-    "studentId": "3523110940",
-    "name": "Emmanuel Castro Salvador",
-    "role": "Documentacion tecnica de controles de seguridad y analisis de riesgos",
-    "commitSha": "4658d038e0af11c072c37ffe7a326f99c0278f74"
-  },
-  {
-    "studentId": "3523110938",
-    "name": "Danna Lizbeth Castañeda Sánchez",
-    "role": "Consolidacion de reportes, pruebas negativas y estructuracion de evidencias",
-    "commitSha": "HEAD"
-  }
-]
+{
+  "schemaVersion": 1,
+  "week": 4,
+  "teamId": "BAM-JI",
+  "commitSha": "a26b0a49908a6b094df6b3fe686e411c0f6bb549",
+  "members": [
+    {
+      "studentId": "3523110936",
+      "name": "Abraham Cervantes Romero",
+      "role": "Implementacion de sanitizacion para telemetria",
+      "command": "npm test",
+      "commitShas": [
+        "17e36dae3b80d426a8761fd36c4c5cc46e942ac7"
+      ],
+      "explanation": "Implementacion de funcion redactForTelemetry para sanitizar datos sensibles en logs.",
+      "files": [
+        "src/utils/telemetry.ts"
+      ],
+      "observedResult": "Todos los campos sensibles fueron redactados correctamente.",
+      "prediction": "Los datos de telemetria no contendran informacion confidencial.",
+      "reviews": [
+        "Aprobado por par"
+      ],
+      "tests": [
+        "test/telemetry.test.ts"
+      ]
+    },
+    {
+      "studentId": "3523110940",
+      "name": "Emmanuel Castro Salvador",
+      "role": "Documentacion tecnica de controles de seguridad y analisis de riesgos",
+      "command": "git log -p docs/security-controls.md",
+      "commitShas": [
+        "4658d038e0af11c072c37ffe7a326f99c0278f74"
+      ],
+      "explanation": "Documentacion de controles de seguridad, matriz de riesgos y politicas de cifrado.",
+      "files": [
+        "docs/security-controls.md"
+      ],
+      "observedResult": "Documento creado y verificado con los estandares requeridos.",
+      "prediction": "El reporte de seguridad cumplira con los criterios de evaluacion.",
+      "reviews": [
+        "Aprobado por par"
+      ],
+      "tests": [
+        "Linter md pass"
+      ]
+    },
+    {
+      "studentId": "3523110938",
+      "name": "Danna Lizbeth Castañeda Sánchez",
+      "role": "Consolidacion de reportes, pruebas negativas y estructuracion de evidencias",
+      "command": "python tools/course_public_evaluator.py --week 04 --mode public",
+      "commitShas": [
+        "a26b0a49908a6b094df6b3fe686e411c0f6bb549"
+      ],
+      "explanation": "Consolidacion de reportes JSON y validacion de esquemas para el evaluador del curso.",
+      "files": [
+        "reports/week-04/secret-scan.json",
+        "reports/week-04/negative-tests.json",
+        "evidence/week-04/engineering.json",
+        "evidence/week-04/individual.json"
+      ],
+      "observedResult": "Validacion de esquemas en modo public finalizada exitosamente.",
+      "prediction": "Todas las pruebas publicas pasaran en el evaluador automatizado.",
+      "reviews": [
+        "Aprobado por par"
+      ],
+      "tests": [
+        "course_public_evaluator.py"
+      ]
+    }
+  ]
+}

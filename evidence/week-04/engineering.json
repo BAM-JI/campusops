@@ -1,4 +1,7 @@
 {
+  "schemaVersion": 1,
+  "week": 4,
+  "commitSha": "a26b0a49908a6b094df6b3fe686e411c0f6bb549",
   "decision": "Adopcion de expo-secure-store para tokens y credenciales de sesion",
   "alternatives": [
     "AsyncStorage en texto plano sin cifrado",
@@ -11,5 +14,12 @@
     "AC-03",
     "AC-04",
     "AC-05"
+  ],
+  "verification": [
+    {
+      "command": "npm test -- course-tests/public/week-04.test.ts",
+      "result": "pass",
+      "evidence": "Implementacion de redactForTelemetry y exclusion de secrets veritada en ejecucion de pruebas"
+    }
   ]
 }

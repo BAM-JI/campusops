@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "week": 4,
+  "mode": "public",
+  "commitSha": "a26b0a49908a6b094df6b3fe686e411c0f6bb549",
+  "evaluatedAt": "2026-09-28T22:05:07.324148+00:00",
+  "status": "pass",
+  "checks": [
+    {
+      "id": "base_files",
+      "status": "pass",
+      "detail": "missing=[]"
+    },
+    {
+      "id": "react_native_profile",
+      "status": "pass",
+      "detail": "missing packages=[]"
+    },
+    {
+      "id": "toolchain_scripts",
+      "status": "pass",
+      "detail": "missing scripts=[]"
+    },
+    {
+      "id": "workflow_integrity",
+      "status": "pass",
+      "detail": "bypass markers=[]"
+    },
+    {
+      "id": "secret_scan",
+      "status": "pass",
+      "detail": "hits=[]"
+    },
+    {
+      "id": "required_evidence",
+      "status": "pass",
+      "detail": "missing/empty=[]"
+    },
+    {
+      "id": "schema:reports/week-04/secret-scan.json",
+      "status": "pass",
+      "detail": "1 checks indexed, 1 boundary/failure; report evaluates HEAD"
+    },
+    {
+      "id": "schema:reports/week-04/negative-tests.json",
+      "status": "pass",
+      "detail": "1 checks indexed, 1 boundary/failure; report evaluates HEAD"
+    },
+    {
+      "id": "schema:evidence/week-04/engineering.json",
+      "status": "pass",
+      "detail": "decision evidence is substantive and reproducible; report evaluates HEAD"
+    },
+    {
+      "id": "schema:evidence/week-04/individual.json",
+      "status": "pass",
+      "detail": "three individual evidence records found"
+    }
+  ]
+}
