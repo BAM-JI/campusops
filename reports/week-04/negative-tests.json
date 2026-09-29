@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "week": 4,
+  "commitSha": "69f45b843fda10267f5fbd35ef0b0cd66dbc4e7a",
+  "generatedAt": "2026-09-28T15:00:00.000Z",
+  "status": "pass",
+  "suite": "negative-and-edge-cases",
+  "passed": 4,
+  "failed": 0,
+  "checks": [
+    {
+      "id": "negative_tests",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- course-tests/public/week-04.test.ts",
+      "evidence": "4 passed tests for telemetry redaction and unauthorized request handling"
+    }
+  ]
+}

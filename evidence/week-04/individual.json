@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "week": 4,
+  "teamId": "team-campusops",
+  "members": [
+    {
+      "studentId": "3523110936",
+      "commitShas": [
+        "17e36dae3b80d426a8761fd36c4c5cc46e942ac7"
+      ],
+      "files": [
+        "src/course-evaluation/index.ts",
+        "src/api/courseBackend.ts"
+      ],
+      "tests": [
+        "course-tests/public/week-04.test.ts"
+      ],
+      "reviews": [
+        "docs/security-controls.md"
+      ],
+      "prediction": "La implementacion de redactForTelemetry sanitizara recursivamente datos personales y sensibles antes de enviarlos a telemetria.",
+      "command": "npm test -- course-tests/public/week-04.test.ts",
+      "observedResult": "pass - sanitizacion exitosa preservando contexto tecnico sin exposicion de secretos.",
+      "explanation": "Implemente la funcion redactForTelemetry con normalizacion de claves para enmascarar tokens, credenciales y datos de incidentes."
+    },
+    {
+      "studentId": "3523110697",
+      "commitShas": [
+        "4658d038e0af11c072c37ffe7a326f99c0278f74"
+      ],
+      "files": [
+        "docs/security-controls.md"
+      ],
+      "tests": [
+        "course-tests/public/week-04.test.ts"
+      ],
+      "reviews": [
+        "src/course-evaluation/index.ts"
+      ],
+      "prediction": "El documento justificara el uso de expo-secure-store y el analisis de riesgo residual por volcados de memoria.",
+      "command": "npm test -- course-tests/public/week-04.test.ts",
+      "observedResult": "pass - documentacion alineada con criterios STRIDE y requerimientos de almacenamiento seguro.",
+      "explanation": "Documente la justificacion tecnica de Keychain/Keystore frente a AsyncStorage y analice las amenazas residuales en dispositivos comprometidos."
+    },
+    {
+      "studentId": "3522110221",
+      "commitShas": [
+        "69f45b843fda10267f5fbd35ef0b0cd66dbc4e7a"
+      ],
+      "files": [
+        "reports/week-04/secret-scan.json",
+        "reports/week-04/negative-tests.json",
+        "evidence/week-04/engineering.json",
+        "evidence/week-04/individual.json"
+      ],
+      "tests": [
+        "make public-test-week-04"
+      ],
+      "reviews": [
+        "docs/security-controls.md"
+      ],
+      "prediction": "Las pruebas negativas y reportes de escaneo pasaran la evaluacion publica sin deteccion de fugas de secretos.",
+      "command": "make public-test-week-04",
+      "observedResult": "pass - reportes y esquemas validados con exito contra el evaluador del curso.",
+      "explanation": "Estructure y consolide los reportes JSON de escaneo de secretos y pruebas negativas, verificando la integridad del commit de evidencias."
+    }
+  ],
+  "commitSha": "69f45b843fda10267f5fbd35ef0b0cd66dbc4e7a"
+}

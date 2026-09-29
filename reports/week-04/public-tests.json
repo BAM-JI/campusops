@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "week": 4,
+  "mode": "public",
+  "commitSha": "69f45b843fda10267f5fbd35ef0b0cd66dbc4e7a",
+  "evaluatedAt": "2026-09-29T03:25:18.135608+00:00",
+  "status": "pass",
+  "checks": [
+    {
+      "id": "base_files",
+      "status": "pass",
+      "detail": "missing=[]"
+    },
+    {
+      "id": "react_native_profile",
+      "status": "pass",
+      "detail": "missing packages=[]"
+    },
+    {
+      "id": "toolchain_scripts",
+      "status": "pass",
+      "detail": "missing scripts=[]"
+    },
+    {
+      "id": "workflow_integrity",
+      "status": "pass",
+      "detail": "bypass markers=[]"
+    },
+    {
+      "id": "secret_scan",
+      "status": "pass",
+      "detail": "hits=[]"
+    },
+    {
+      "id": "required_evidence",
+      "status": "pass",
+      "detail": "missing/empty=[]"
+    },
+    {
+      "id": "schema:reports/week-04/secret-scan.json",
+      "status": "pass",
+      "detail": "1 checks indexed, 1 boundary/failure; evidence-only commit; invalid changes=[]"
+    },
+    {
+      "id": "schema:reports/week-04/negative-tests.json",
+      "status": "pass",
+      "detail": "1 checks indexed, 1 boundary/failure; evidence-only commit; invalid changes=[]"
+    },
+    {
+      "id": "schema:evidence/week-04/engineering.json",
+      "status": "pass",
+      "detail": "decision evidence is substantive and reproducible; evidence-only commit; invalid changes=[]"
+    },
+    {
+      "id": "schema:evidence/week-04/individual.json",
+      "status": "pass",
+      "detail": "three individual evidence records found"
+    }
+  ]
+}
