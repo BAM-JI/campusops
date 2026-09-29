@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "week": 4,
+  "commitSha": "c833d35386f84a20f73f9bf5a4930e16a98fe615",
+  "generatedAt": "2026-09-28T22:00:00.000Z",
+  "checks": [
+    {
+      "id": "redact_primitives_safety",
+      "status": "pass",
+      "detail": "null and primitives safe"
+    },
+    {
+      "id": "redact_sensitive_masking",
+      "status": "pass",
+      "detail": "masked nested fields"
+    }
+  ]
+}
