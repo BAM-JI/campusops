@@ -1,18 +1,19 @@
 {
   "schemaVersion": 1,
   "week": 4,
-  "commitSha": "c833d35386f84a20f73f9bf5a4930e16a98fe615",
-  "generatedAt": "2026-09-28T22:00:00.000Z",
+  "commitSha": "24f47cbf8c4f5dbab914126acdbe4d2c2f44dfbe",
+  "generatedAt": "2026-09-28T15:00:00.000Z",
+  "status": "pass",
+  "suite": "negative-and-edge-cases",
+  "passed": 4,
+  "failed": 0,
   "checks": [
     {
-      "id": "redact_primitives_safety",
+      "id": "negative_tests",
       "status": "pass",
-      "detail": "null and primitives safe"
-    },
-    {
-      "id": "redact_sensitive_masking",
-      "status": "pass",
-      "detail": "masked nested fields"
+      "scenarioType": "failure",
+      "command": "npm test -- course-tests/public/week-04.test.ts",
+      "evidence": "4 passed tests for telemetry redaction and unauthorized request handling"
     }
   ]
 }
