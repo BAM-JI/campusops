@@ -45,7 +45,7 @@
     {
       "studentId": "3522110221",
       "commitShas": [
-        "24f47cbf8c4f5dbab914126acdbe4d2c2f44dfbe"
+        "69f45b843fda10267f5fbd35ef0b0cd66dbc4e7a"
       ],
       "files": [
         "reports/week-04/secret-scan.json",
@@ -64,5 +64,6 @@
       "observedResult": "pass - reportes y esquemas validados con exito contra el evaluador del curso.",
       "explanation": "Estructure y consolide los reportes JSON de escaneo de secretos y pruebas negativas, verificando la integridad del commit de evidencias."
     }
-  ]
+  ],
+  "commitSha": "69f45b843fda10267f5fbd35ef0b0cd66dbc4e7a"
 }
