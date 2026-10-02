@@ -12,9 +12,6 @@ function pending(name: string): never {
   throw new Error(`${name} must be implemented in the assigned week`);
 }
 
-export function parseRemoteResource(_input: unknown): ParseResult {
-  return pending('parseRemoteResource');
-}
 
 export function coordinateRefresh(_events: readonly AuthEvent[]): Readonly<{
   status: 'anonymous' | 'authenticated';
@@ -117,4 +114,45 @@ export function redactForTelemetry(input: unknown): unknown {
     }
   }
   return result;
+}
+
+export interface RemoteResourceEnvelope {
+  id: string;
+  version: number;
+  status: string;
+  payload: Record<string, unknown> | null;
+  [key: string]: unknown;
+}
+
+export function parseRemoteResource(input: unknown): { ok: boolean; data?: RemoteResourceEnvelope; error?: string } {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    return { ok: false, error: 'Input must be a non-null object' };
+  }
+
+  const candidate = input as Record<string, unknown>;
+
+  // Validar ID
+  if (typeof candidate.id !== 'string' || candidate.id.trim() === '') {
+    return { ok: false, error: 'Invalid or missing id' };
+  }
+
+  // Validar Version (entero no negativo)
+  if (typeof candidate.version !== 'number' || !Number.isInteger(candidate.version) || candidate.version < 0) {
+    return { ok: false, error: 'Invalid version: must be a non-negative integer' };
+  }
+
+  // Validar Status
+  if (typeof candidate.status !== 'string' || candidate.status.trim() === '') {
+    return { ok: false, error: 'Invalid or missing status' };
+  }
+
+  // Validar Payload (debe ser objeto o null)
+  if (candidate.payload !== null && (typeof candidate.payload !== 'object' || Array.isArray(candidate.payload))) {
+    return { ok: false, error: 'Payload must be an object or null' };
+  }
+
+  return {
+    ok: true,
+    data: candidate as RemoteResourceEnvelope,
+  };
 }
