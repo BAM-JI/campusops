@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "week": 5,
+  "commitSha": "75143fe2e3a3577ce60d063f53f9be2434ce2942",
+  "generatedAt": "2026-10-01T20:00:00.000Z",
+  "checks": [
+    {
+      "id": "malformed_payload_rejected",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- course-tests/public/week-05.test.ts",
+      "evidence": "parseRemoteResource devuelve ok: false ante enteros corruptos o null"
+    },
+    {
+      "id": "timeout_simulation_handled",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "make public-test-week-05",
+      "evidence": "Timeout controlado mediante abort controller sin colapsar runtime"
+    }
+  ]
+}

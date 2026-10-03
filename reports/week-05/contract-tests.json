@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "week": 5,
+  "commitSha": "75143fe2e3a3577ce60d063f53f9be2434ce2942",
+  "generatedAt": "2026-10-01T20:00:00.000Z",
+  "checks": [
+    {
+      "id": "dto_envelope_validation",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm test -- course-tests/public/week-05.test.ts",
+      "evidence": "Validacion exitosa de sobre DTO con id, version y payload"
+    },
+    {
+      "id": "dto_forward_compatibility",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- course-tests/public/week-05.test.ts",
+      "evidence": "Campos no reconocidos ignorados sin generar fallo en la entidad"
+    }
+  ]
+}

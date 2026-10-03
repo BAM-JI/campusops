@@ -1,14 +1,17 @@
 {
   "schemaVersion": 1,
   "week": 1,
-  "commitSha": "91572a2a2e1c378603699f5fd998c8b46ac9f0e6",
+  "commitSha": "75143fe2e3a3577ce60d063f53f9be2434ce2942",
   "decision": "Adoptar una estrategia de sincronización offline con detección explícita de conflictos sobre el campo compuesto work (assignedTechnicianId + status) y validación de versión base mediante HTTP 409, complementada con Idempotency-Key en cada mutación.",
   "alternatives": [
     "Estrategia Last-Write-Wins (LWW) en la que el último cambio recibido por el servidor sobrescribe el recurso sin evaluar la versión previa ni notificar al usuario.",
     "Bloqueo pesimista de incidencias que impida a los técnicos operar en áreas sin conexión a menos que adquieran un token de bloqueo exclusivo previo."
   ],
   "tradeoff": "Se garantiza que una reasignación realizada por coordinación no sea sobrescrita silenciosamente por un técnico desconectado, aceptando la sobrecarga de persistir la intención en la cola local y requerir manejo de conflicto en la interfaz.",
-  "requirementIds": ["AC-02", "AC-04"],
+  "requirementIds": [
+    "AC-02",
+    "AC-04"
+  ],
   "verification": [
     {
       "command": "make feedback",

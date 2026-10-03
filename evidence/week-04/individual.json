@@ -6,7 +6,7 @@
     {
       "studentId": "3523110936",
       "commitShas": [
-        "17e36dae3b80d426a8761fd36c4c5cc46e942ac7"
+        "13d9cea261ad96fb60ad4b2670599d3224207c4f"
       ],
       "files": [
         "src/course-evaluation/index.ts",
@@ -26,7 +26,7 @@
     {
       "studentId": "3523110697",
       "commitShas": [
-        "4658d038e0af11c072c37ffe7a326f99c0278f74"
+        "75143fe2e3a3577ce60d063f53f9be2434ce2942"
       ],
       "files": [
         "docs/security-controls.md"
@@ -45,7 +45,7 @@
     {
       "studentId": "3522110221",
       "commitShas": [
-        "69f45b843fda10267f5fbd35ef0b0cd66dbc4e7a"
+        "75143fe2e3a3577ce60d063f53f9be2434ce2942"
       ],
       "files": [
         "reports/week-04/secret-scan.json",
@@ -65,5 +65,5 @@
       "explanation": "Estructure y consolide los reportes JSON de escaneo de secretos y pruebas negativas, verificando la integridad del commit de evidencias."
     }
   ],
-  "commitSha": "69f45b843fda10267f5fbd35ef0b0cd66dbc4e7a"
+  "commitSha": "75143fe2e3a3577ce60d063f53f9be2434ce2942"
 }

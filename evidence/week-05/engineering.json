@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "week": 5,
+  "commitSha": "75143fe2e3a3577ce60d063f53f9be2434ce2942",
+  "decision": "Separacion estricta entre DTO remoto validado por parseRemoteResource y entidades puras de dominio con tipado seguro",
+  "alternatives": [
+    "Inyeccion directa de respuestas HTTP crudas (JSON) en los componentes de UI",
+    "Validacion reactiva en pantallas delegando el control de excepciones a bloques try/catch locales"
+  ],
+  "tradeoff": "Requiere una capa de transformacion previa que incrementa el boilerplate inicial a cambio de aislar fallas de esquema, prevenir excepciones por datos corruptos y garantizar compatibilidad hacia adelante",
+  "requirementIds": [
+    "AC-01",
+    "AC-02",
+    "AC-03",
+    "AC-04",
+    "AC-05"
+  ],
+  "verification": [
+    {
+      "command": "npm test -- course-tests/public/week-05.test.ts",
+      "result": "pass",
+      "evidence": "CampusOps validates the published incident DTO boundary en 5 variantes de prueba"
+    }
+  ]
+}
