@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "week": 1,
-  "mode": "evidence",
+  "week": 5,
+  "mode": "public",
   "commitSha": "75143fe2e3a3577ce60d063f53f9be2434ce2942",
-  "evaluatedAt": "2026-09-10T16:56:41.380917+00:00",
+  "evaluatedAt": "2026-10-03T02:52:10.873498+00:00",
   "status": "pass",
   "checks": [
     {
@@ -37,24 +37,24 @@
       "detail": "missing/empty=[]"
     },
     {
-      "id": "schema:reports/week-01/baseline.json",
+      "id": "schema:reports/week-05/contract-tests.json",
       "status": "pass",
       "detail": "2 checks indexed, 1 boundary/failure; evidence-only commit; invalid changes=[]"
     },
     {
-      "id": "schema:evidence/week-01/engineering.json",
+      "id": "schema:reports/week-05/failure-matrix.json",
+      "status": "pass",
+      "detail": "2 checks indexed, 2 boundary/failure; evidence-only commit; invalid changes=[]"
+    },
+    {
+      "id": "schema:evidence/week-05/engineering.json",
       "status": "pass",
       "detail": "decision evidence is substantive and reproducible; evidence-only commit; invalid changes=[]"
     },
     {
-      "id": "schema:evidence/week-01/individual.json",
+      "id": "schema:evidence/week-05/individual.json",
       "status": "pass",
       "detail": "three individual evidence records found"
-    },
-    {
-      "id": "frozen_sha",
-      "status": "pass",
-      "detail": "tag=week-01-final tagSha=22bccfee75aa128085de9eea73042c0d8ba09dfa head=22bccfee75aa128085de9eea73042c0d8ba09dfa"
     }
   ]
 }

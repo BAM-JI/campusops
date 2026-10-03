@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "week": 4,
-  "commitSha": "69f45b843fda10267f5fbd35ef0b0cd66dbc4e7a",
+  "commitSha": "75143fe2e3a3577ce60d063f53f9be2434ce2942",
   "decision": "Adopcion de expo-secure-store para tokens y credenciales de sesion en reposo y sanitizacion recursiva con redactForTelemetry en transito.",
   "alternatives": [
     "AsyncStorage en texto plano sin cifrado",

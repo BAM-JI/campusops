@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "week": 5,
+  "teamId": "team-campusops",
+  "members": [
+    {
+      "studentId": "3523110936",
+      "commitShas": [
+        "13d9cea261ad96fb60ad4b2670599d3224207c4f"
+      ],
+      "files": [
+        "src/course-evaluation/index.ts"
+      ],
+      "tests": [
+        "course-tests/public/week-05.test.ts"
+      ],
+      "reviews": [
+        "docs/api-contract.md"
+      ],
+      "prediction": "parseRemoteResource validara la integridad del sobre DTO y rechazara cargas corruptas o tipos invalidos.",
+      "command": "npm test -- course-tests/public/week-05.test.ts",
+      "observedResult": "pass - validacion exitosa de frontera DTO para incidentes.",
+      "explanation": "Implemente la funcion parseRemoteResource garantizando identificadores y estados no vacios, versiones enteras no negativas y nulabilidad segura de payload."
+    },
+    {
+      "studentId": "3523110697",
+      "commitShas": [
+        "75143fe2e3a3577ce60d063f53f9be2434ce2942"
+      ],
+      "files": [
+        "docs/api-contract.md"
+      ],
+      "tests": [
+        "course-tests/public/week-05.test.ts"
+      ],
+      "reviews": [
+        "src/course-evaluation/index.ts"
+      ],
+      "prediction": "El contrato de API establecera formalmente la separacion entre DTOs y dominio, asi como la matriz de errores tipados.",
+      "command": "npm test -- course-tests/public/week-05.test.ts",
+      "observedResult": "pass - criterios documentados alineados a los requerimientos de evaluacion.",
+      "explanation": "Defini la documentacion del contrato de integracion, detallando el manejo de escenarios de timeout, payload nulo y errores de servidor."
+    },
+    {
+      "studentId": "3522110221",
+      "commitShas": [
+        "75143fe2e3a3577ce60d063f53f9be2434ce2942"
+      ],
+      "files": [
+        "reports/week-05/contract-tests.json",
+        "reports/week-05/failure-matrix.json",
+        "evidence/week-05/engineering.json",
+        "evidence/week-05/individual.json"
+      ],
+      "tests": [
+        "make public-test-week-05"
+      ],
+      "reviews": [
+        "docs/api-contract.md"
+      ],
+      "prediction": "Los reportes de contrato y matriz de fallas pasaran la validacion del evaluador publico sin discrepancias de esquema.",
+      "command": "make public-test-week-05",
+      "observedResult": "pass - esquemas de evidencias validados correctamente.",
+      "explanation": "Consolide los reportes JSON de matriz de fallas y pruebas de contrato, estructurando la evidencia del equipo para la entrega final."
+    }
+  ]
+}
