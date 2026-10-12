@@ -1,0 +1,34 @@
+stateDiagram-v2
+    [*] --> Anonymous: App Init / Sin credenciales
+
+    Anonymous --> Authenticating: POST /v1/session/login
+    Authenticating --> Authenticated: Credenciales válidas (Token guardado en SecureStore)
+    Authenticating --> Anonymous: Credenciales inválidas (401 unknown_fixture_actor)
+
+    Authenticated --> Authenticated: Peticiones HTTP con token válido (200 OK)
+
+    Authenticated --> Refreshing: request401 de la generación activa (Single-flight Lock, refreshCalls + 1)
+
+    state Refreshing {
+        [*] --> InFlight: Disparar POST /v1/session/refresh una sola vez por generación
+        InFlight --> Coalescing: Peticiones concurrentes adicionales reciben 401
+        Coalescing --> Coalescing: Encolar requestId en pendingRequestIds (misma generación, sin duplicados ni nuevo refresh)
+    }
+
+    Refreshing --> Authenticated: refreshSucceeded (Tokens rotados, activeGeneration nueva, cada pendiente pasa una vez a retriedRequestIds)
+    Refreshing --> Anonymous: refreshFailed o token revocado (Purga de SecureStore, persistedToken null, cola descartada sin reintentos)
+    Refreshing --> Anonymous: logout durante la renovación (cancela la cola pendiente)
+
+    Authenticated --> Anonymous: Logout explícito (Limpieza total de tokens, activeGeneration null)
+
+    note right of Refreshing
+        coordinateRefresh guarda refreshInProgressForGen.
+        Un 401 de la misma generación no dispara otro refresh.
+        Al terminar, exitoso o fallido, el lock se libera.
+    end note
+
+    note left of Authenticating
+        Login y SecureStore son responsabilidad del cliente de sesión.
+        coordinateRefresh sólo procesa request401, refreshSucceeded,
+        refreshFailed y logout (src/course-evaluation/contracts.ts).
+    end note
