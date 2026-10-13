@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "week": 6,
+  "commitSha": "dcdf11acf6ee95930a1f24d5a5a21a900187175f",
+  "generatedAt": "2026-10-10T20:00:00.000Z",
+  "checks": [
+    {
+      "id": "auth_login_lifecycle",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm test -- course-tests/public/week-06.test.ts",
+      "evidence": "coalesces concurrent 401s into one refresh and retries each request once"
+    },
+    {
+      "id": "auth_logout_cleanup",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- course-tests/public/week-06.test.ts",
+      "evidence": "logout removes persisted session state"
+    }
+  ]
+}
