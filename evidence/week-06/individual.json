@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "week": 6,
+  "teamId": "team-campusops",
+  "members": [
+    {
+      "studentId": "3523110936",
+      "commitShas": [
+        "509114234999a14c834c23b3a6bb04385414b98c"
+      ],
+      "files": [
+        "src/course-evaluation/index.ts"
+      ],
+      "tests": [
+        "course-tests/public/week-06.test.ts"
+      ],
+      "reviews": [
+        "docs/session-state-machine.mmd"
+      ],
+      "prediction": "coordinateRefresh unificara tres eventos 401 concurrentes en una sola llamada de refresh y despachara los reintentos.",
+      "command": "npm test -- course-tests/public/week-06.test.ts",
+      "observedResult": "pass - unificacion de 401 y reintentos ejecutados con exito.",
+      "explanation": "Implemente la coordinacion de eventos de autenticacion aplicando el patron single-flight para evitar renovaciones duplicadas y asegurar la eliminacion de tokens en logout."
+    },
+    {
+      "studentId": "3523110697",
+      "commitShas": [
+        "fdcc1295c146aef46f1c4989b35f96a51006047d"
+      ],
+      "files": [
+        "docs/session-state-machine.mmd"
+      ],
+      "tests": [
+        "course-tests/public/week-06.test.ts"
+      ],
+      "reviews": [
+        "src/course-evaluation/index.ts"
+      ],
+      "prediction": "El diagrama Mermaid modelara con precision la transicion entre estados autenticado, refrescando y anonimo.",
+      "command": "npm test -- course-tests/public/week-06.test.ts",
+      "observedResult": "pass - correspondencia directa entre la maquina de estados y el ciclo de sesion.",
+      "explanation": "Documente la maquina de estados de la sesion en formato Mermaid, detallando el manejo de 401, el candado de renovacion y la transicion de error seguro."
+    },
+    {
+      "studentId": "3522110221",
+      "commitShas": [
+        "dcdf11acf6ee95930a1f24d5a5a21a900187175f"
+      ],
+      "files": [
+        "reports/week-06/auth-tests.json",
+        "reports/week-06/concurrency.json",
+        "evidence/week-06/engineering.json",
+        "evidence/week-06/individual.json"
+      ],
+      "tests": [
+        "make public-test-week-06"
+      ],
+      "reviews": [
+        "docs/session-state-machine.mmd"
+      ],
+      "prediction": "Los esquemas de reportes y evidencia de concurrencia cumpliran las especificaciones del evaluador publico.",
+      "command": "make public-test-week-06",
+      "observedResult": "pass - validacion completa de reportes de sesion y concurrencia.",
+      "explanation": "Estructure y consolide los reportes JSON de autenticacion y concurrencia, verificando la consistencia de los esquemas y hashes para la entrega."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "week": 6,
+  "commitSha": "dcdf11acf6ee95930a1f24d5a5a21a900187175f",
+  "generatedAt": "2026-10-10T20:00:00.000Z",
+  "checks": [
+    {
+      "id": "concurrency_single_flight",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm test -- course-tests/public/week-06.test.ts",
+      "evidence": "Múltiples peticiones 401 unificadas en un solo refreshCalls"
+    },
+    {
+      "id": "concurrency_refresh_failure",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "make public-test-week-06",
+      "evidence": "Fallo en renovación transiciona a estado no autenticado sin bucles infinitos"
+    }
+  ]
+}
