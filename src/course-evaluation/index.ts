@@ -7,6 +7,7 @@ import type {
   SyncRecord,
 } from './contracts';
 import type { IncidentLocation } from '../campusops/contracts';
+import { deduplicateOperations as deduplicateQueuedOperations } from '../sync/deduplicate-operations';
 
 function pending(name: string): never {
   throw new Error(`${name} must be implemented in the assigned week`);
@@ -106,9 +107,9 @@ export function resolveSync(
 }
 
 export function deduplicateOperations<T extends Readonly<{ operationId: string }>>(
-  _operations: readonly T[],
+  operations: readonly T[],
 ): readonly T[] {
-  return pending('deduplicateOperations');
+  return deduplicateQueuedOperations(operations);
 }
 
 export function planRetry(_input: Readonly<{
