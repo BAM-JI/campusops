@@ -1,29 +1,48 @@
 graph TD
     subgraph UI["Capa de Interfaz (UI)"]
-        IncidentListScreen["IncidentListScreen"]
-        IncidentDetailScreen["IncidentDetailScreen"]
+        LoginScreen["LoginScreen"]
+        IncidentScreen["IncidentListAndDetailScreen"]
+    end
+
+    subgraph Composition["Raíz de composición"]
+        App["App.tsx"]
     end
 
     subgraph Application["Capa de Aplicación"]
         GetIncidentsUseCase["GetIncidentsUseCase"]
         GetIncidentDetailUseCase["GetIncidentDetailUseCase"]
+        CreateIncidentUseCase["CreateIncidentUseCase"]
+        PerformIncidentActionUseCase["PerformIncidentActionUseCase"]
     end
 
     subgraph Domain["Capa de Dominio"]
         Incident["Entidad: Incident"]
         IIncidentRepository["Puerto: IIncidentRepository"]
-        SessionBoundary["Límite: Session"]
-        PersistenceBoundary["Límite: Persistence"]
+        ApiResult["ApiResult / ApiError"]
         LocationBoundary["Límite: LocationProvider"]
     end
 
     subgraph Infrastructure["Capa de Infraestructura"]
-        InMemoryIncidentRepo["InMemoryIncidentRepository"]
+        IncidentClient["IncidentClient (HTTP, timeout, DTO)"]
+        SessionManager["SessionManager (login, refresh compartido, logout)"]
+        SecureStore["expo-secure-store"]
+        InMemoryIncidentRepo["InMemoryIncidentRepository (doble de prueba)"]
     end
 
-    IncidentListScreen --> GetIncidentsUseCase
-    IncidentDetailScreen --> GetIncidentDetailUseCase
+    App --> LoginScreen
+    App --> IncidentScreen
+    App --> SessionManager
+    App --> IncidentClient
+    IncidentScreen --> GetIncidentsUseCase
+    IncidentScreen --> GetIncidentDetailUseCase
+    IncidentScreen --> CreateIncidentUseCase
     GetIncidentsUseCase --> IIncidentRepository
     GetIncidentDetailUseCase --> IIncidentRepository
+    CreateIncidentUseCase --> IIncidentRepository
+    PerformIncidentActionUseCase --> IIncidentRepository
     IIncidentRepository --> Incident
+    IIncidentRepository --> ApiResult
+    IncidentClient -.->|implementa| IIncidentRepository
     InMemoryIncidentRepo -.->|implementa| IIncidentRepository
+    IncidentClient --> SessionManager
+    SessionManager --> SecureStore
