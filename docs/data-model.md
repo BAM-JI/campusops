@@ -25,7 +25,7 @@ Toda la base local vive en **un solo documento JSON** bajo una clave. Cada cambi
 | `campusops.db.backup` | Copia textual exacta del documento antes de migrar. | Sólo durante una migración. |
 | `campusops.db.migration` | Marcador `{ from, to, startedAt }`. | Sólo durante una migración. Si existe al arrancar, la migración anterior se interrumpió. |
 
-**Qué no se guarda aquí:** tokens de sesión, contraseñas ni encabezados `Authorization`. La sesión sigue las reglas de la semana 6 y se maneja aparte (`coordinateRefresh`). Una prueba revisa que el documento persistido no contenga `token` ni `authorization`.
+**Qué no se guarda aquí:** tokens de sesión, contraseñas ni encabezados `Authorization`. La sesión sigue las reglas de la semana 6 y vive aparte, en `expo-secure-store` (`src/auth/session-manager.ts`). Una prueba revisa que el documento persistido no contenga `token` ni `authorization`.
 
 **Alternativas consideradas:**
 
@@ -165,4 +165,4 @@ npx jest --no-watchman --ci --runInBand tests/week-08
 | `migration.test.ts` › app killed … is recovered on the next start | Cierre a mitad de migración: el siguiente arranque recupera y migra sin mezclar esquemas. |
 | `migration.test.ts` › corrupt local data… | Datos corruptos se reportan y no se sobrescriben. |
 
-La sincronización con el servidor (envío con `Idempotency-Key`, detección de conflicto con `resolveSync` y uso de `confirm`, `recordFailedAttempt` y `markConflict`) se documenta en `docs/sync-policy.md`.
+La sincronización con el servidor (`SyncEngine.sync()`: envío con `Idempotency-Key`, detección de conflicto con `resolveSync` y uso de `confirm`, `recordFailedAttempt`, `markConflict`, `rebase` y `dismissConflict`) se documenta en `docs/sync-policy.md`.
