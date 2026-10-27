@@ -10,6 +10,7 @@ import type { IncidentLocation } from '../campusops/contracts';
 import { parseRemoteResource as parseEnvelope } from '../api/incident-dto';
 import { summarizeAuthEvents, type RefreshSummary } from '../auth/refresh-coordinator';
 import { deduplicateOperations as deduplicateQueuedOperations } from '../sync/deduplicate-operations';
+import { resolveSync as resolveFieldSync } from '../sync/resolve-sync';
 
 function pending(name: string): never {
   throw new Error(`${name} must be implemented in the assigned week`);
@@ -20,12 +21,13 @@ export function coordinateRefresh(events: readonly AuthEvent[]): RefreshSummary 
   return summarizeAuthEvents(events);
 }
 
+/** Week 08: delegates to the field merge used by the sync engine (src/sync). */
 export function resolveSync(
-  _base: SyncRecord,
-  _local: SyncRecord,
-  _remote: SyncRecord,
+  base: SyncRecord,
+  local: SyncRecord,
+  remote: SyncRecord,
 ): Readonly<{ kind: 'merged'; fields: JsonObject } | { kind: 'conflict'; fields: readonly string[] }> {
-  return pending('resolveSync');
+  return resolveFieldSync(base, local, remote);
 }
 
 export function deduplicateOperations<T extends Readonly<{ operationId: string }>>(
