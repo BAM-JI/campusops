@@ -4,13 +4,15 @@ export type BackendHealth = Readonly<{
   contractVersion: 1;
 }>;
 
-// Hallazgo 1: Leer variable de entorno segura en lugar de forzar IP estática fija
-const DEFAULT_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://127.0.0.1:4310';
-const TOKEN = process.env.EXPO_PUBLIC_COURSE_TOKEN || 'course-valid-token';
+/**
+ * Backend address from the environment (Android emulator: http://10.0.2.2:4310).
+ * Only the public teaching fixture; no tokens or secrets live here: the session
+ * tokens come from /v1/session/login and are kept by SessionManager in SecureStore.
+ */
+export const BACKEND_URL =
+  process.env.EXPO_PUBLIC_COURSE_BACKEND_URL ?? process.env.EXPO_PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:4310';
 
-export async function getBackendHealth(
-  baseUrl = process.env.EXPO_PUBLIC_COURSE_BACKEND_URL ?? DEFAULT_URL,
-): Promise<BackendHealth> {
+export async function getBackendHealth(baseUrl = BACKEND_URL): Promise<BackendHealth> {
   const response = await fetch(`${baseUrl}/health`);
   if (!response.ok) {
     // Mensaje de error controlado sin exponer rutas internas detalladas
@@ -28,19 +30,4 @@ export async function getBackendHealth(
     throw new Error('Backend health contract mismatch');
   }
   return payload as BackendHealth;
-}
-
-// Función auditada de incidencias
-export async function fetchIncidents() {
-  try {
-    const response = await fetch(`${DEFAULT_URL}/v1/incidents`, {
-      headers: { Authorization: `Bearer ${TOKEN}` }
-    });
-    const data = await response.json();
-    // Hallazgo 2: Log sanitizado sin exponer datos personales ni tokens
-    console.log({ status: response.status, count: data?.items?.length ?? 0 });
-    return data;
-  } catch (err) {
-    throw new Error('No fue posible consultar las incidencias del campus.');
-  }
 }
