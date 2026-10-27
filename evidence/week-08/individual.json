@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "week": 8,
+  "teamId": "team-campusops",
+  "members": [
+    {
+      "studentId": "3523110936",
+      "commitShas": ["7288cd96bc2937d5b55e77c6c963f501903d1e4d"],
+      "files": ["src/sync/resolve-sync.ts", "src/sync/sync-engine.ts", "tests/week-08/resolve-sync.test.ts"],
+      "tests": ["tests/week-08/resolve-sync.test.ts", "tests/week-08/sync-engine.test.ts", "course-tests/public/week-08.test.ts"],
+      "reviews": ["PR #11 y PR #12 de Emmanuel revisados y mergeados"],
+      "prediction": "resolveSync no marcaria conflicto cuando el mismo contenido llega con las claves en otro orden y ordenaria por nombre los campos en conflicto.",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/resolve-sync.test.ts",
+      "observedResult": "pass - same content with keys in another order is not a conflict y several conflicts are reported in name order.",
+      "explanation": "Integro resolveSync y el motor de sincronizacion sobre la cola persistente y agrego pruebas de comparacion JSON canonica y orden de conflictos."
+    },
+    {
+      "studentId": "3523110697",
+      "commitShas": [
+        "945daf50ec8cd8211d2bc2871f0ca225ebad0835",
+        "4ede69e36bed462ab711e7add1d02a62f3704b22",
+        "3fd682482c1c6228fb359ec6164321dec4a0e68d"
+      ],
+      "files": [
+        "src/persistence/local-database.ts",
+        "src/persistence/operation-queue.ts",
+        "src/sync/deduplicate-operations.ts",
+        "docs/data-model.md",
+        "docs/sync-policy.md"
+      ],
+      "tests": ["tests/week-08/migration.test.ts", "tests/week-08/persistent-queue.test.ts"],
+      "reviews": ["PR #16 de Lizbeth revisado y aprobado"],
+      "prediction": "Una falla inyectada en cualquier paso de la migracion dejaria el schema 1 intacto y el reintento migraria sin perder operaciones ni cambiar su operationId.",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts tests/week-08/persistent-queue.test.ts",
+      "observedResult": "pass - 15 pruebas: rollback en backup-written, transformed y database-written, recuperacion tras cierre, reinicio con mismos operationId.",
+      "explanation": "Implemento la cola persistente con operationId estable y la migracion v1->v2 con respaldo, marcador y rollback, la deduplicacion de operaciones y documento data-model.md y sync-policy.md."
+    },
+    {
+      "studentId": "3522110221",
+      "commitShas": ["c585c952f66a88134f23d940fc526fc973acbf6b"],
+      "files": ["tests/week-08/end-to-end.test.ts"],
+      "tests": ["tests/week-08/end-to-end.test.ts"],
+      "reviews": ["Ejecucion de la suite completa de la semana 08 para los reportes"],
+      "prediction": "El flujo integral migraria la base de schema 1, conservaria las operaciones al reiniciar y declararia conflicto en work tras la reasignacion sin duplicar operaciones.",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/end-to-end.test.ts",
+      "observedResult": "pass - end-to-end: migrate, restart and sync without losing or duplicating work.",
+      "explanation": "Escribio la prueba integral que une migracion, reinicio, reasignacion del coordinador y sincronizacion del tecnico usando el codigo real del equipo."
+    }
+  ]
+}

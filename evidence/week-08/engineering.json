@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "week": 8,
+  "commitSha": "c31e3371db35135434124c78c7bb10fb54175a20",
+  "decision": "Los cambios en campos distintos desde la misma base se combinan con resolveSync comparando JSON canonico; cambios distintos en el mismo campo (work = estado + asignado) se declaran conflicto y la operacion local se conserva en la cola persistente como conflict sin sobrescribir la asignacion remota. Cada operacion usa un operationId estable como Idempotency-Key, solo confirm() la retira tras 201 o duplicate=true, y timeout/5xx la dejan pending.",
+  "alternatives": [
+    "Last-write-wins: la ultima escritura gana y se pierde la intencion del tecnico o la reasignacion del coordinador",
+    "Descartar la operacion local al recibir 403 o 409 y volver a pedir los datos al servidor",
+    "Generar un operationId nuevo en cada reintento, lo que permite aplicar dos veces el mismo efecto"
+  ],
+  "tradeoff": "Conservar el conflicto y no resolverlo en automatico evita perdida silenciosa y respeta la autorizacion por perfil, pero exige una decision explicita (dismissConflict o reasignacion del coordinador) y guardar estado extra en la cola (state, attempts, conflictFields). La idempotencia por operationId evita efectos dobles a costa de persistir la clave y el contenido de cada operacion.",
+  "requirementIds": ["AC-01", "AC-02", "AC-03", "AC-04", "AC-05"],
+  "verification": [
+    {
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"reassignment conflict\"",
+      "result": "pass",
+      "evidence": "La operacion start de technician-1 queda en conflict con [work] y el servidor conserva technician-2."
+    },
+    {
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"replayed operation\"",
+      "result": "pass",
+      "evidence": "Misma Idempotency-Key responde duplicate=true con un solo evento en history."
+    },
+    {
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"failure injected\"",
+      "result": "pass",
+      "evidence": "La falla inyectada deja el schema 1 identico y el reintento migra completo a schema 2."
+    },
+    {
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08 course-tests/public/week-08.test.ts",
+      "result": "pass",
+      "evidence": "Test Suites: 6 passed. Tests: 28 passed."
+    }
+  ]
+}

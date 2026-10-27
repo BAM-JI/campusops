@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "week": 8,
+  "commitSha": "c31e3371db35135434124c78c7bb10fb54175a20",
+  "generatedAt": "2026-10-27T05:42:00Z",
+  "checks": [
+    {
+      "id": "migration-valid-v1-to-v2",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"valid migration\"",
+      "evidence": "PASS valid migration keeps incidents and pending operations with stable identity. Estado: schema 1 con 1 incidencia y 2 pendientes -> schema 2 con legacy-1 y legacy-2, sin backup ni marcador; segunda corrida up-to-date."
+    },
+    {
+      "id": "migration-failure-rollback",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"failure injected\"",
+      "evidence": "PASS en los 3 pasos (backup-written, transformed, database-written). Antes = schema 1; despues de la falla = schema 1 identico byte a byte, sin marcador ni backup; despues de recuperar = schema 2 con 1 incidencia y 2 operaciones."
+    },
+    {
+      "id": "migration-io-failure",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"I/O failure\"",
+      "evidence": "PASS I/O failure while writing the new schema leaves the old one untouched: status rolled-back y campusops.db sigue en schema 1."
+    },
+    {
+      "id": "migration-app-killed-recovery",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"app killed\"",
+      "evidence": "PASS antes y despues de escribir el schema nuevo: tras el cierre quedan marcador y backup; al reabrir recovered=true, migra a schema 2 con legacy-1 y legacy-2 y limpia marcador y backup, sin esquemas mezclados."
+    },
+    {
+      "id": "migration-corrupt-data",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"corrupt local data\"",
+      "evidence": "PASS: JSON corrupto lanza CorruptDatabaseError y el contenido original no se sobrescribe."
+    },
+    {
+      "id": "restart-keeps-queue",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/persistent-queue.test.ts -t \"restart keeps\"",
+      "evidence": "PASS: inicio de atencion, nota y foto pendiente (photo-pending-001, uploaded=false) de technician-1 se recuperan con los mismos operationId tras reabrir desde disco; la cola no guarda tokens."
+    },
+    {
+      "id": "only-confirmed-leaves-queue",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/persistent-queue.test.ts -t \"only confirmed\"",
+      "evidence": "PASS: confirm retira solo op-offline-photo-001; el fallo queda pending con attempts=1 y el conflicto queda con conflictFields=[work], ambos tras reiniciar."
+    },
+    {
+      "id": "reassignment-conflict",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"reassignment conflict\"",
+      "evidence": "PASS reassignment conflict keeps both facts: start offline de technician-1 queda en conflict con [work] y sigue en la cola; el servidor conserva assignedTechnicianId=technician-2."
+    },
+    {
+      "id": "replayed-operation-single-effect",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"replayed operation\"",
+      "evidence": "PASS replayed operation applies once: misma Idempotency-Key responde duplicate=true, un solo evento en history y la cola queda vacia."
+    },
+    {
+      "id": "unconfirmed-operation-pending",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"unconfirmed operation\"",
+      "evidence": "PASS unconfirmed operation stays pending: con timeout_after_commit la operacion sigue pending con el mismo operationId; el reintento confirma sin duplicar."
+    },
+    {
+      "id": "server-error-keeps-operation",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"server error\"",
+      "evidence": "PASS server error keeps the operation: respuesta 500 deja la operacion pending."
+    },
+    {
+      "id": "independent-changes-merged",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand course-tests/public/week-08.test.ts -t \"merges independent\"",
+      "evidence": "PASS merges independent field changes and reports same-field conflict: {title: Local, priority: 2} combinado y conflicto [title] cuando ambos cambian el mismo campo."
+    },
+    {
+      "id": "deduplicate-operations",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand course-tests/public/week-08.test.ts -t \"deduplicates\"",
+      "evidence": "PASS deduplicates a replayed operation by stable identity: conserva la primera de op-1 y op-2 sin mutar la entrada."
+    },
+    {
+      "id": "end-to-end-flow",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/end-to-end.test.ts",
+      "evidence": "PASS end-to-end: migrate, restart and sync without losing or duplicating work: migra schema 1, reabre con legacy-1 y legacy-2, conflicto [work] tras reasignacion y sin operationId duplicados."
+    },
+    {
+      "id": "week-08-suite",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08 course-tests/public/week-08.test.ts",
+      "evidence": "Test Suites: 6 passed, 6 total. Tests: 28 passed, 28 total."
+    }
+  ]
+}
