@@ -9,6 +9,7 @@ import type {
 import type { IncidentLocation } from '../campusops/contracts';
 import { parseRemoteResource as parseEnvelope } from '../api/incident-dto';
 import { summarizeAuthEvents, type RefreshSummary } from '../auth/refresh-coordinator';
+import { deduplicateOperations as deduplicateQueuedOperations } from '../sync/deduplicate-operations';
 
 function pending(name: string): never {
   throw new Error(`${name} must be implemented in the assigned week`);
@@ -28,9 +29,9 @@ export function resolveSync(
 }
 
 export function deduplicateOperations<T extends Readonly<{ operationId: string }>>(
-  _operations: readonly T[],
+  operations: readonly T[],
 ): readonly T[] {
-  return pending('deduplicateOperations');
+  return deduplicateQueuedOperations(operations);
 }
 
 export function planRetry(_input: Readonly<{
