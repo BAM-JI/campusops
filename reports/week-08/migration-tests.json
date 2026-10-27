@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "week": 8,
+  "commitSha": "c31e3371db35135434124c78c7bb10fb54175a20",
+  "generatedAt": "2026-10-26T20:00:00Z",
+  "checks": [
+    {
+      "id": "migration-valid-v1-to-v2",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"valid migration\"",
+      "evidence": "Tests: 1 passed, 1 total. Schema 1 con 1 incidencia y 2 pendientes paso a schema 2 con legacy-1 y legacy-2 sin backup ni marcador."
+    },
+    {
+      "id": "migration-failure-rollback",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"failure injected\"",
+      "evidence": "Tests: 1 passed, 1 total. Estado antes = schema 1, despues de la falla = schema 1 identico sin marcador, despues de recuperar = schema 2 completo."
+    },
+    {
+      "id": "migration-io-failure",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"I/O failure\"",
+      "evidence": "Tests: 1 passed, 1 total. Manejo correcto de error de escritura I/O manteniendo el estado previo."
+    },
+    {
+      "id": "migration-app-killed",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"app killed\"",
+      "evidence": "Tests: 1 passed, 1 total. Recuperacion exitosa en reinicio tras interrupcion abrupta del proceso."
+    },
+    {
+      "id": "persistent-queue-restart-keeps",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/persistent-queue.test.ts -t \"restart keeps\"",
+      "evidence": "Tests: 1 passed, 1 total. La cola persistente conserva todas las operaciones pendientes al reabrir la base de datos."
+    },
+    {
+      "id": "persistent-queue-only-confirmed",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/persistent-queue.test.ts -t \"only confirmed\"",
+      "evidence": "Tests: 1 passed, 1 total. Unicamente las operaciones confirmadas explicitamente por el servidor son removidas de la cola."
+    },
+    {
+      "id": "sync-engine-reassignment-conflict",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"reassignment conflict\"",
+      "evidence": "Tests: 1 passed, 1 total. Conflicto detectado; se mantiene la asignacion remota y la operacion local pasa a estado conflict."
+    },
+    {
+      "id": "sync-engine-replayed-operation",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"replayed operation\"",
+      "evidence": "Tests: 1 passed, 1 total. Idempotencia verificada; la operacion reintentada aplica una sola vez sin duplicar cambios."
+    },
+    {
+      "id": "sync-engine-unconfirmed-operation",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"unconfirmed operation\"",
+      "evidence": "Tests: 1 passed, 1 total. Las operaciones no confirmadas permanecen en estado pending en la cola."
+    },
+    {
+      "id": "public-merges-independent",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand course-tests/public/week-08.test.ts -t \"merges independent\"",
+      "evidence": "Tests: 1 passed, 1 total. Cambios concurrentes en campos distintos se combinan automaticamente sin conflicto."
+    },
+    {
+      "id": "public-deduplicates",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand course-tests/public/week-08.test.ts -t \"deduplicates\"",
+      "evidence": "Tests: 1 passed, 1 total. Operaciones duplicadas con el mismo operationId son descartadas correctamente."
+    },
+    {
+      "id": "end-to-end-flow",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/end-to-end.test.ts",
+      "evidence": "Tests: 1 passed, 1 total. Flujo completo validado: migracion v1->v2, reinicio de app, sincronizacion y manejo de conflicto de reasignacion sin perdida de datos."
+    }
+  ]
+}

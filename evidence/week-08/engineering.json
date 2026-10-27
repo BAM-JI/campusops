@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "week": 8,
+  "commitSha": "c31e3371db35135434124c78c7bb10fb54175a20",
+  "decision": "Cambios en campos distintos se combinan con resolveSync comparando JSON. Cambios distintos en el mismo campo work se declaran conflicto y la operacion local se conserva como conflict sin sobrescribir la asignacion remota. Cada operacion usa operationId estable como Idempotency-Key y solo confirm() la retira.",
+  "alternatives": [
+    "Last-write-wins: la ultima escritura sobreescribe todo y se pierde la intencion del tecnico remoto",
+    "Descartar la operacion local inmediatamente al recibir una respuesta de error 403 o 409"
+  ],
+  "tradeoff": "Se garantiza la consistencia de datos y se evita la perdida de trabajo local ante desconexiones o conflictos, a costa de mantener operaciones en estado conflict para resolucion manual.",
+  "requirementIds": ["AC-01", "AC-02", "AC-03", "AC-04", "AC-05"],
+  "verification": [
+    {
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"reassignment conflict\"",
+      "result": "pass",
+      "evidence": "Conflicto registrado correctamente sin perder la operacion local."
+    },
+    {
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/sync-engine.test.ts -t \"replayed operation\"",
+      "result": "pass",
+      "evidence": "La ejecucion repetida mantiene la idempotencia con el servidor."
+    },
+    {
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-08/migration.test.ts -t \"failure injected\"",
+      "result": "pass",
+      "evidence": "Rollback exitoso ante fallas inyectadas en el proceso de migracion."
+    }
+  ]
+}
