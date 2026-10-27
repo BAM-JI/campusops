@@ -7,95 +7,17 @@ import type {
   SyncRecord,
 } from './contracts';
 import type { IncidentLocation } from '../campusops/contracts';
+import { parseRemoteResource as parseEnvelope } from '../api/incident-dto';
+import { summarizeAuthEvents, type RefreshSummary } from '../auth/refresh-coordinator';
 import { deduplicateOperations as deduplicateQueuedOperations } from '../sync/deduplicate-operations';
 
 function pending(name: string): never {
   throw new Error(`${name} must be implemented in the assigned week`);
 }
 
-
-export interface CoordinateRefreshResult {
-  status: 'anonymous' | 'authenticated';
-  activeGeneration: number | null;
-  refreshCalls: number;
-  retriedRequestIds: readonly string[];
-  persistedToken: string | null;
-}
-
-export function coordinateRefresh(events: readonly AuthEvent[]): Readonly<{
-  status: 'anonymous' | 'authenticated';
-  activeGeneration: number | null;
-  refreshCalls: number;
-  retriedRequestIds: readonly string[];
-  persistedToken: string | null;
-}> {
-  let status: 'anonymous' | 'authenticated' = 'anonymous';
-  let activeGeneration: number | null = null;
-  let refreshCalls = 0;
-  const pendingRequestIds: string[] = [];
-  const retriedRequestIds: string[] = [];
-  let persistedToken: string | null = null;
-  let refreshInProgressForGen: number | null = null;
-
-  for (const event of events) {
-    if (event.type === 'logout') {
-      status = 'anonymous';
-      activeGeneration = null;
-      persistedToken = null;
-      pendingRequestIds.length = 0;
-      refreshInProgressForGen = null;
-      continue;
-    }
-
-    if (event.type === 'request401') {
-      const reqId = event.requestId;
-      const gen = typeof event.generation === 'number' ? event.generation : 0;
-
-      if (typeof reqId === 'string' && reqId.trim() !== '') {
-        if (!pendingRequestIds.includes(reqId)) {
-          pendingRequestIds.push(reqId);
-        }
-      }
-
-      if (refreshInProgressForGen !== gen) {
-        refreshInProgressForGen = gen;
-        refreshCalls += 1;
-      }
-      continue;
-    }
-
-    if (event.type === 'refreshSucceeded') {
-      status = 'authenticated';
-      activeGeneration = typeof event.generation === 'number' ? event.generation : null;
-      persistedToken = typeof event.token === 'string' ? event.token : null;
-      refreshInProgressForGen = null;
-
-      while (pendingRequestIds.length > 0) {
-        const nextId = pendingRequestIds.shift();
-        if (nextId) {
-          retriedRequestIds.push(nextId);
-        }
-      }
-      continue;
-    }
-
-    if (event.type === 'refreshFailed') {
-      status = 'anonymous';
-      activeGeneration = null;
-      persistedToken = null;
-      pendingRequestIds.length = 0;
-      refreshInProgressForGen = null;
-      continue;
-    }
-  }
-
-  return {
-    status,
-    activeGeneration,
-    refreshCalls,
-    retriedRequestIds,
-    persistedToken,
-  };
+/** Week 06: delegates to the renewal policy used by SessionManager (src/auth). */
+export function coordinateRefresh(events: readonly AuthEvent[]): RefreshSummary {
+  return summarizeAuthEvents(events);
 }
 
 export function resolveSync(
@@ -191,43 +113,7 @@ export function redactForTelemetry(input: unknown): unknown {
   return result;
 }
 
-export interface RemoteResourceEnvelope {
-  id: string;
-  version: number;
-  status: string;
-  payload: Record<string, unknown> | null;
-  [key: string]: unknown;
-}
-
-export function parseRemoteResource(input: unknown): { ok: boolean; data?: RemoteResourceEnvelope; error?: string } {
-  if (!input || typeof input !== 'object' || Array.isArray(input)) {
-    return { ok: false, error: 'Input must be a non-null object' };
-  }
-
-  const candidate = input as Record<string, unknown>;
-
-  // Validar ID
-  if (typeof candidate.id !== 'string' || candidate.id.trim() === '') {
-    return { ok: false, error: 'Invalid or missing id' };
-  }
-
-  // Validar Version (entero no negativo)
-  if (typeof candidate.version !== 'number' || !Number.isInteger(candidate.version) || candidate.version < 0) {
-    return { ok: false, error: 'Invalid version: must be a non-negative integer' };
-  }
-
-  // Validar Status
-  if (typeof candidate.status !== 'string' || candidate.status.trim() === '') {
-    return { ok: false, error: 'Invalid or missing status' };
-  }
-
-  // Validar Payload (debe ser objeto o null)
-  if (candidate.payload !== null && (typeof candidate.payload !== 'object' || Array.isArray(candidate.payload))) {
-    return { ok: false, error: 'Payload must be an object or null' };
-  }
-
-  return {
-    ok: true,
-    data: candidate as RemoteResourceEnvelope,
-  };
+/** Week 05: envelope validation shared with the HTTP client (src/api/incident-dto.ts). */
+export function parseRemoteResource(input: unknown): ParseResult {
+  return parseEnvelope(input);
 }
