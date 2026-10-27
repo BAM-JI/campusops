@@ -132,6 +132,27 @@ export class PersistentOperationQueue {
     return this.update(operationId, (operation) => ({ ...operation, attempts: operation.attempts + 1 }));
   }
 
+  /**
+   * Moves a pending operation onto a newer server version after resolveSync merged it without
+   * conflicts. The operationId stays the same, so the server still applies it at most once.
+   */
+  rebase(operationId: string, baseVersion: number): Promise<QueuedOperation> {
+    return this.update(operationId, (operation) => {
+      if (operation.state !== 'pending') throw new Error(`operationId ${operationId} is not pending`);
+      return { ...operation, baseVersion };
+    });
+  }
+
+  /** Explicit user decision to drop a conflicting local intention. Never called automatically. */
+  dismissConflict(operationId: string): Promise<void> {
+    return this.mutate((database) => {
+      const operation = this.require(database, operationId);
+      if (operation.state !== 'conflict') throw new Error(`operationId ${operationId} is not in conflict`);
+      const operations = database.operations.filter((item) => item.operationId !== operationId);
+      return { database: { ...database, operations }, result: undefined };
+    });
+  }
+
   upsertIncident(incident: StoredIncident): Promise<void> {
     return this.mutate((database) => {
       const incidents = database.incidents.filter((item) => item.id !== incident.id);
