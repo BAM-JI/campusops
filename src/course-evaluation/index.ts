@@ -8,6 +8,7 @@ import type {
 } from './contracts';
 import type { IncidentLocation } from '../campusops/contracts';
 import { parseRemoteResource as parseEnvelope } from '../api/incident-dto';
+import { planRetry as planRetryWithPolicy } from '../api/retry-policy';
 import { summarizeAuthEvents, type RefreshSummary } from '../auth/refresh-coordinator';
 import { deduplicateOperations as deduplicateQueuedOperations } from '../sync/deduplicate-operations';
 import { resolveSync as resolveFieldSync } from '../sync/resolve-sync';
@@ -36,14 +37,15 @@ export function deduplicateOperations<T extends Readonly<{ operationId: string }
   return deduplicateQueuedOperations(operations);
 }
 
-export function planRetry(_input: Readonly<{
+/** Week 09: same policy the IncidentClient uses to decide each retry (src/api/retry-policy.ts). */
+export function planRetry(input: Readonly<{
   method: 'GET' | 'POST';
   status: number | 'timeout';
   attempt: number;
   retryAfterMs?: number;
   idempotencyKey?: string;
 }>): Readonly<{ retry: boolean; delayMs: number; requiresStableIdempotencyKey: boolean }> {
-  return pending('planRetry');
+  return planRetryWithPolicy(input);
 }
 
 export function reduceRemoteResponses(_input: Readonly<{

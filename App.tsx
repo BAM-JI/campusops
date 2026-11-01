@@ -17,7 +17,8 @@ import { IncidentListAndDetailScreen, LoginScreen } from './src/ui/IncidentScree
 /** Composition root: the only place that wires HTTP and secure storage adapters to the use cases. */
 function createServices() {
   const session = new SessionManager({ baseUrl: BACKEND_URL, storage: secureStoreDriver });
-  const client = new IncidentClient({ baseUrl: BACKEND_URL, session });
+  // Bounded retries with Retry-After (week 9); POSTs repeat only with their stable Idempotency-Key.
+  const client = new IncidentClient({ baseUrl: BACKEND_URL, session, retry: {} });
   return {
     session,
     getIncidents: new GetIncidentsUseCase(client),
