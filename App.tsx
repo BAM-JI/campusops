@@ -9,9 +9,11 @@ import {
   GetIncidentDetailUseCase,
   GetIncidentsUseCase,
 } from './src/application/incident-usecases';
+import { ResolveIncidentLocationUseCase } from './src/application/location-usecases';
 import { SessionManager, type SessionIdentity } from './src/auth/session-manager';
 import { secureStoreDriver } from './src/auth/session-storage';
 import { describeApiError } from './src/domain/result';
+import { CachedGeocoder, CourseGeocodingAdapter } from './src/location/geocoding-adapter';
 import { IncidentListAndDetailScreen, LoginScreen } from './src/ui/IncidentScreens';
 
 /** Composition root: the only place that wires HTTP and secure storage adapters to the use cases. */
@@ -24,6 +26,10 @@ function createServices() {
     getIncidents: new GetIncidentsUseCase(client),
     getIncidentDetail: new GetIncidentDetailUseCase(client),
     createIncident: new CreateIncidentUseCase(client),
+    // Week 9: geocoding through the course double, cached, with bounded retries; manual fallback.
+    resolveLocation: new ResolveIncidentLocationUseCase(
+      new CachedGeocoder(new CourseGeocodingAdapter({ baseUrl: BACKEND_URL, session, retry: {} })),
+    ),
   };
 }
 
@@ -89,6 +95,7 @@ export default function App() {
           getIncidentsUseCase={services.getIncidents}
           getIncidentDetailUseCase={services.getIncidentDetail}
           createIncidentUseCase={services.createIncident}
+          resolveLocationUseCase={services.resolveLocation}
           onUnauthorized={onUnauthorized}
         />
       ) : (

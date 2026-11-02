@@ -7,6 +7,7 @@ import {
   type GetIncidentDetailUseCase,
   type GetIncidentsUseCase,
 } from '../application/incident-usecases';
+import type { LocationNotice, ResolveIncidentLocationUseCase } from '../application/location-usecases';
 import type { Incident } from '../domain/incident';
 import { describeApiError, type ApiError } from '../domain/result';
 import type { CampusRole } from '../campusops/contracts';
@@ -23,6 +24,8 @@ interface Props {
   getIncidentsUseCase: GetIncidentsUseCase;
   getIncidentDetailUseCase: GetIncidentDetailUseCase;
   createIncidentUseCase: CreateIncidentUseCase;
+  /** Week 09: optional location lookup; without it the location is only typed by hand. */
+  resolveLocationUseCase?: ResolveIncidentLocationUseCase;
   onUnauthorized: () => void;
 }
 
@@ -32,6 +35,7 @@ export function IncidentListAndDetailScreen({
   getIncidentsUseCase,
   getIncidentDetailUseCase,
   createIncidentUseCase,
+  resolveLocationUseCase,
   onUnauthorized,
 }: Props) {
   const [list, setList] = useState<ListState>({ kind: 'loading' });
@@ -112,6 +116,7 @@ export function IncidentListAndDetailScreen({
         <CreateIncidentForm
           role={identity.role}
           useCase={createIncidentUseCase}
+          resolveLocation={resolveLocationUseCase}
           onCreated={reload}
           onError={handleError}
         />
@@ -120,21 +125,47 @@ export function IncidentListAndDetailScreen({
   );
 }
 
+const LOCATION_NOTICES: Readonly<Record<LocationNotice, string>> = {
+  provider: 'Ubicación encontrada por el servicio de mapas.',
+  provider_unavailable:
+    'El servicio de ubicación no está disponible. Se guardará lo que escribiste (edificio, zona o referencia).',
+  provider_invalid:
+    'El servicio no devolvió una ubicación válida. Se guardará lo que escribiste (edificio, zona o referencia).',
+};
+
 function CreateIncidentForm({
   role,
   useCase,
+  resolveLocation,
   onCreated,
   onError,
 }: Readonly<{
   role: CampusRole;
   useCase: CreateIncidentUseCase;
+  resolveLocation?: ResolveIncidentLocationUseCase | undefined;
   onCreated: () => void;
   onError: (error: ApiError) => void;
 }>) {
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
+  const [locationNotice, setLocationNotice] = useState<string | null>(null);
+  const [searching, setSearching] = useState(false);
+
   // The same key is reused while the draft does not change, so a retry after a timeout does not duplicate.
   const draftKey = useRef(createIdempotencyKey());
+
+  // The typed text is never lost: on failure it stays as the manual location, without coordinates.
+  const searchLocation = async () => {
+    if (!resolveLocation || location.trim() === '') return;
+    setSearching(true);
+    const resolved = await resolveLocation.execute(location);
+    setSearching(false);
+    if (resolved.location.label !== location) {
+      draftKey.current = createIdempotencyKey();
+      setLocation(resolved.location.label);
+    }
+    setLocationNotice(LOCATION_NOTICES[resolved.notice]);
+  };
 
   const submit = async () => {
     const result = await useCase.execute(role, { category: 'connectivity', description, location }, draftKey.current);
@@ -142,6 +173,7 @@ function CreateIncidentForm({
       draftKey.current = createIdempotencyKey();
       setDescription('');
       setLocation('');
+      setLocationNotice(null);
       onCreated();
     } else onError(result.error);
   };
@@ -160,13 +192,24 @@ function CreateIncidentForm({
       />
       <TextInput
         style={styles.input}
-        placeholder="Ubicación (texto)"
+        placeholder="Ubicación: edificio, zona o referencia"
         value={location}
         onChangeText={(text) => {
           draftKey.current = createIdempotencyKey();
+          setLocationNotice(null);
           setLocation(text);
         }}
       />
+      {resolveLocation ? (
+        <TouchableOpacity
+          style={styles.button}
+          disabled={searching || location.trim() === ''}
+          onPress={() => void searchLocation()}
+        >
+          <Text style={styles.buttonText}>{searching ? 'Buscando…' : 'Buscar ubicación'}</Text>
+        </TouchableOpacity>
+      ) : null}
+      {locationNotice ? <Text testID="location-notice">{locationNotice}</Text> : null}
       <TouchableOpacity style={styles.button} onPress={() => void submit()}>
         <Text style={styles.buttonText}>Enviar</Text>
       </TouchableOpacity>
