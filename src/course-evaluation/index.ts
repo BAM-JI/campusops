@@ -62,7 +62,6 @@ export function reducePermissionLifecycle(
   return pending('reducePermissionLifecycle');
 }
 
-/** Week 09: see docs/CAMPUSOPS_API.md; this is not a completed solution. */
 /** Week 09: same decision the create form uses (src/location/select-incident-location.ts). */
 export function selectIncidentLocation(provider: unknown, manualLabel: string): IncidentLocation {
   return selectLocation(provider, manualLabel);

@@ -7,6 +7,9 @@ import { failure, success } from '../../src/domain/result';
 import type { GeocodingPort } from '../../src/location/geocoding-adapter';
 import { IncidentListAndDetailScreen } from '../../src/ui/IncidentScreens';
 
+// Compiling the React Native components on a cold cache (clean clone) can exceed the 5 s default.
+jest.setTimeout(60000);
+
 function screenWith(geocoder: GeocodingPort) {
   const created: NewIncident[] = [];
   const repository: IIncidentRepository = {
