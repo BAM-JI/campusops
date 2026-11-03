@@ -1,0 +1,90 @@
+
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "commitSha": "9e2c9c636c84db48e0d33dd7f12383f5a641b1a6",
+  "generatedAt": "2026-11-03T03:44:03Z",
+  "policy": {
+    "maxAttempts": 4,
+    "baseDelayMs": 250,
+    "maxDelayMs": 4000,
+    "maxRetryAfterMs": 30000
+  },
+  "checks": [
+    {
+      "id": "retry-attempt-limit",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+      "evidence": "6 tests passed. The policy rejects retries at attempts 4, 5 and 100.",
+      "observedAttempts": [3, 4, 5, 100],
+      "maxAllowedAttempts": 4
+    },
+    {
+      "id": "progressive-backoff",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+      "evidence": "The test verified planned delays of 250, 500 and 1000 ms for attempts 1, 2 and 3.",
+      "plannedDelayMs": [250, 500, 1000],
+      "totalPlannedDelayMs": 1750
+    },
+    {
+      "id": "retry-after-429",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+      "evidence": "For HTTP 429 at attempt 1 with Retry-After 800 ms, planRetry returned retry=true and delayMs=800.",
+      "statusCode": 429,
+      "plannedDelayMs": 800
+    },
+    {
+      "id": "retry-after-503",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+      "evidence": "For HTTP 503 at attempt 2 with Retry-After 1000 ms, planRetry returned delayMs=1000.",
+      "statusCode": 503,
+      "plannedDelayMs": 1000
+    },
+    {
+      "id": "retry-after-over-limit",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+      "evidence": "A Retry-After value of 120000 ms exceeds the configured 30000 ms limit, so the policy rejects the retry.",
+      "requestedDelayMs": 120000,
+      "retryAllowed": false
+    },
+    {
+      "id": "post-idempotency-key-required",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+      "evidence": "POST retries without a stable idempotency key are rejected; a POST with a valid key can be retried after a timeout.",
+      "retryWithoutKey": false
+    },
+    {
+      "id": "business-errors-no-retry",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+      "evidence": "HTTP 400, 401, 403, 404, 409 and 422 do not trigger retries.",
+      "retryAllowed": false
+    },
+    {
+      "id": "lost-response-no-duplicate-effects",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --runInBand --ci tests/week-09/lost-response.test.ts",
+      "evidence": "3 tests passed. The lost-response scenario verifies safe repetition using the same operation identity without duplicate effects."
+    },
+    {
+      "id": "client-retry-integration",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --runInBand --ci tests/week-09/client-retry.test.ts",
+      "evidence": "7 tests passed, covering server failures, maximum attempts, HTTP 429, timeout, stable POST idempotency, business errors and sanitized logs."
+    }
+  ]
+}

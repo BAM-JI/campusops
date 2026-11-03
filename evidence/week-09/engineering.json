@@ -1,0 +1,52 @@
+
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "commitSha": "9e2c9c636c84db48e0d33dd7f12383f5a641b1a6",
+  "decision": "CampusOps utiliza adaptadores de geocodificacion, cache temporal y ubicacion manual para mantener disponible el registro de incidentes cuando falla un proveedor externo. Los errores transitorios permiten reintentos limitados mediante planRetry, mientras que los errores de negocio no se reintentan. Las operaciones POST requieren una clave de idempotencia estable para evitar duplicados cuando una respuesta se pierde despues de que el servidor procesa la solicitud.",
+  "alternatives": [
+    "Depender exclusivamente del proveedor externo de geocodificacion, sin cache ni ubicacion manual. Esta alternativa simplifica la integracion, pero bloquea el flujo cuando el proveedor falla.",
+    "Reintentar indefinidamente todas las solicitudes HTTP. Esta alternativa podria recuperar algunas operaciones, pero aumenta el consumo de recursos y el riesgo de duplicados.",
+    "Utilizar unicamente ubicaciones manuales sin consultar un proveedor externo. Esta alternativa elimina la dependencia de geocodificacion, pero pierde la obtencion automatica de coordenadas."
+  ],
+  "tradeoff": "La solucion mantiene la funcionalidad ante fallos transitorios y reduce consultas repetidas mediante una cache con TTL de 10 minutos y capacidad de 20 entradas. Como costo, incorpora validaciones, estados de error, manejo de expiracion y mayor complejidad de pruebas. Los reintentos agregan latencia y por eso se limitan a cuatro intentos; cuando el proveedor no se recupera, se conserva la referencia manual sin inventar coordenadas.",
+  "requirementIds": [
+    "AC-02",
+    "AC-03",
+    "AC-04"
+  ],
+  "verification": [
+    {
+      "command": "npm test -- --runInBand --ci tests/week-09/location.test.ts",
+      "result": "pass",
+      "evidence": "9 pruebas exitosas. Se verificaron respuestas validas, datos invalidos, timeout, HTTP 429, desconexion, cache y comportamiento del adaptador de Nominatim."
+    },
+    {
+      "command": "npm test -- --runInBand --ci tests/week-09/location-form.test.tsx",
+      "result": "pass",
+      "evidence": "2 pruebas exitosas. El formulario conserva la referencia manual cuando falla el proveedor y utiliza la ubicacion del proveedor cuando es valida."
+    },
+    {
+      "command": "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+      "result": "pass",
+      "evidence": "6 pruebas exitosas. Se comprobaron el limite de cuatro intentos, Retry-After, backoff progresivo, limites configurables y restriccion de POST sin clave de idempotencia."
+    },
+    {
+      "command": "npm test -- --runInBand --ci tests/week-09/client-retry.test.ts",
+      "result": "pass",
+      "evidence": "7 pruebas exitosas. Se comprobaron errores HTTP, timeout, reintentos controlados, identidad estable de POST y registros sanitizados."
+    },
+    {
+      "command": "npm test -- --runInBand --ci tests/week-09/lost-response.test.ts",
+      "result": "pass",
+      "evidence": "3 pruebas exitosas. Se verifico la recuperacion ante una respuesta perdida sin duplicar los efectos de la operacion."
+    },
+    {
+      "command": "node scripts/geocode-real-once.mjs \"Biblioteca Central Universidad\"",
+      "result": "pass",
+      "evidence": "Consulta real exitosa a OpenStreetMap Nominatim. Resultado provider, ubicacion Biblioteca Central en Puebla, duracion observada de 1153 ms y ejecucion UTC 2026-11-03T03:33:22.190Z."
+    }
+  ],
+  "aiAssistance": "Se utilizo ChatGPT como apoyo para estructurar la documentacion y las evidencias. Las decisiones se contrastaron con el codigo fuente y las pruebas ejecutadas. No se modificaron las pruebas para forzar resultados exitosos."
+}
+

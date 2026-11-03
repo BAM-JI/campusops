@@ -1,0 +1,51 @@
+
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "commitSha": "9e2c9c636c84db48e0d33dd7f12383f5a641b1a6",
+  "generatedAt": "2026-11-03T03:44:03Z",
+  "checks": [
+    {
+      "id": "geocoding-timeout-manual-fallback",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --runInBand --ci tests/week-09/location.test.ts",
+      "evidence": "9 pruebas exitosas. El escenario de timeout devuelve una ubicacion no disponible y permite conservar la referencia manual."
+    },
+    {
+      "id": "geocoding-rate-limit",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --runInBand --ci tests/week-09/location.test.ts",
+      "evidence": "9 pruebas exitosas. El escenario HTTP 429 se maneja como rate_limited sin bloquear la seleccion manual."
+    },
+    {
+      "id": "geocoding-disconnection",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --runInBand --ci tests/week-09/location.test.ts",
+      "evidence": "9 pruebas exitosas. La desconexion del proveedor se maneja como indisponibilidad y se conserva la alternativa manual."
+    },
+    {
+      "id": "geocoding-invalid-response",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- --runInBand --ci tests/week-09/location.test.ts",
+      "evidence": "9 pruebas exitosas. Las respuestas incompletas o invalidas no se aceptan como coordenadas validas."
+    },
+    {
+      "id": "lost-response-after-commit",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --runInBand --ci tests/week-09/lost-response.test.ts",
+      "evidence": "3 pruebas exitosas. La respuesta se pierde despues de procesar la operacion; el reintento con la misma identidad evita duplicar efectos."
+    },
+    {
+      "id": "manual-location-form",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --runInBand --ci tests/week-09/location-form.test.tsx",
+      "evidence": "2 pruebas exitosas. El formulario conserva el edificio escrito por el usuario cuando falla el proveedor."
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "teamId": "team-campusops",
+  "members": [
+    {
+        "studentId": "3523110936",
+        "commitShas": [
+            "422ccb93b5b3b8b08c64f093953fcb20be4ed25d",
+            "31dc39407d89c3b6a5bbf9f11ef3491f69a2e843"
+        ],
+        "files": [
+            "src/location/select-incident-location.ts",
+            "src/location/geocoding-adapter.ts",
+            "src/location/nominatim-adapter.ts",
+            "src/application/location-usecases.ts",
+            "src/ui/IncidentScreens.tsx",
+            "scripts/geocode-real-once.mjs"
+        ],
+        "tests": [
+            "tests/week-09/location.test.ts",
+            "tests/week-09/location-form.test.tsx",
+            "course-tests/public/week-09.test.ts"
+        ],
+        "reviews": [
+            "PR #18 de Emmanuel (paquete semana 09) revisado y mergeado",
+            "PR #19 de Emmanuel (planRetry y reintentos) revisado y mergeado",
+            "PR #22 de Emmanuel (docs/resilience-policy.md) revisado, aprobado y mergeado"
+        ],
+        "prediction": "Con timeout, 429, desconexion o coordenadas invalidas la incidencia conservaria la ubicacion escrita como manual sin coordenadas, el 429 esperaria Retry-After con maximo 4 solicitudes y la cache solo guardaria resultados validos.",
+        "command": "npx jest --no-watchman --ci --runInBand tests/week-09/location.test.ts tests/week-09/location-form.test.tsx course-tests/public/week-09.test.ts",
+        "observedResult": "pass - 15 pruebas: timeout y desconexion caen a manual, 429 espera [1000, 1000, 1000] con 4 solicitudes, la cache hace 1 solicitud para dos consultas iguales y no guarda fallos. Ejecucion real con Nominatim (2026-11-02T05:45:19Z): outcome result, source provider, 867 ms.",
+        "explanation": "Implemento selectIncidentLocation, el adaptador de geocodificacion del curso con cache y reintentos, el adaptador de Nominatim para la ejecucion real y la ubicacion manual en el formulario. Uso Claude Code como asistencia; reviso el codigo y verifico con los comandos indicados."
+ },
+    {
+      "studentId": "3523110697",
+      "commitShas": [
+        "a9ece4f69e6c2312a67eaa41c741ebf3b171208c"
+      ],
+      "files": [
+        "src/api/incident-client.ts",
+        "src/api/retry-policy.ts",
+        "tests/week-09/client-retry.test.ts",
+        "tests/week-09/lost-response.test.ts",
+        "tests/week-09/retry-policy.test.ts"
+      ],
+      "tests": [
+        "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+        "npm test -- --runInBand --ci tests/week-09/client-retry.test.ts",
+        "npm test -- --runInBand --ci tests/week-09/lost-response.test.ts"
+      ],
+      "prediction": "Los errores transitorios deben permitir reintentos limitados. Una solicitud POST solo debe repetirse con una clave de idempotencia estable para evitar duplicados.",
+      "command": "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+      "observedResult": "En la verificacion del equipo pasaron 6 pruebas de politica de reintentos, 7 pruebas del cliente y 3 pruebas de respuesta perdida.",
+      "explanation": "La politica limita los intentos a cuatro, respeta Retry-After dentro del limite configurado y evita repetir operaciones POST sin identidad estable.",
+      "reviews": []
+    },
+    {
+      "studentId": "3522110221",
+      "commitShas": [
+        "9e2c9c636c84db48e0d33dd7f12383f5a641b1a6"
+      ],
+      "files": [
+        "docs/resilience-policy.md"
+      ],
+      "tests": [
+        "npm test -- --runInBand --ci tests/week-09/lost-response.test.ts",
+        "npm test -- --runInBand --ci tests/week-09/retry-policy.test.ts",
+        "npm test -- --runInBand --ci tests/week-09/client-retry.test.ts",
+        "npm test -- --runInBand --ci tests/week-09/location.test.ts",
+        "npm test -- --runInBand --ci tests/week-09/location-form.test.tsx"
+      ],
+      "prediction": "Las pruebas de inyeccion de fallos deben demostrar que CampusOps controla los reintentos, evita efectos duplicados y mantiene disponible la ubicacion manual cuando falla el proveedor.",
+      "command": "npm test -- --runInBand --ci tests/week-09/lost-response.test.ts",
+      "observedResult": "Se ejecutaron 27 pruebas exitosas en cinco archivos de pruebas. El escenario de respuesta perdida finalizo con 3 pruebas exitosas. Tambien se realizo una consulta real a Nominatim con resultado exitoso.",
+      "explanation": "Se documento la politica de resiliencia y se verificaron los escenarios de timeout, errores HTTP, respuesta perdida, limites de reintentos y alternativa manual. Los resultados se registraron en los reportes de la semana 09.",
+      "reviews": []
+    }
+  ]
+}
