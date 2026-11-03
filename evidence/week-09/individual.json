@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "teamId": "team-campusops",
+  "members": [
+    {
+      "studentId": "3523110936",
+      "commitShas": [
+        "422ccb93b5b3b8b08c64f093953fcb20be4ed25d",
+        "31dc39407d89c3b6a5bbf9f11ef3491f69a2e843"
+      ],
+      "files": [
+        "src/location/select-incident-location.ts",
+        "src/location/geocoding-adapter.ts",
+        "src/location/nominatim-adapter.ts",
+        "src/application/location-usecases.ts",
+        "src/ui/IncidentScreens.tsx",
+        "scripts/geocode-real-once.mjs"
+      ],
+      "tests": [
+        "tests/week-09/location.test.ts",
+        "tests/week-09/location-form.test.tsx",
+        "course-tests/public/week-09.test.ts"
+      ],
+      "reviews": [
+        "PR #18 de Emmanuel (paquete semana 09) revisado y mergeado",
+        "PR #19 de Emmanuel (planRetry y reintentos) revisado y mergeado",
+        "PR #22 de Emmanuel (docs/resilience-policy.md) revisado, aprobado y mergeado"
+      ],
+      "prediction": "Con timeout, 429, desconexion o coordenadas invalidas la incidencia conservaria la ubicacion escrita como manual sin coordenadas, el 429 esperaria Retry-After con maximo 4 solicitudes y la cache solo guardaria resultados validos.",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-09/location.test.ts tests/week-09/location-form.test.tsx course-tests/public/week-09.test.ts",
+      "observedResult": "pass - 15 pruebas: timeout y desconexion caen a manual, 429 espera [1000, 1000, 1000] con 4 solicitudes, la cache hace 1 solicitud para dos consultas iguales y no guarda fallos. Ejecucion real con Nominatim (2026-11-02T05:45:19Z): outcome result, source provider, 867 ms.",
+      "explanation": "Implemento selectIncidentLocation, el adaptador de geocodificacion del curso con cache y reintentos, el adaptador de Nominatim para la ejecucion real y la ubicacion manual en el formulario. Uso Claude Code como asistencia; reviso el codigo y verifico con los comandos indicados."
+    },
+    {
+      "studentId": "3523110697",
+      "commitShas": [
+        "a9ece4f69e6c2312a67eaa41c741ebf3b171208c",
+        "690fa2f991155d3e93b37173d62ac62e1080846c",
+        "cd9da17cd8bf1ee231637061ff03782f69cc6f78"
+      ],
+      "files": [
+        "src/api/retry-policy.ts",
+        "src/api/incident-client.ts",
+        "docs/resilience-policy.md"
+      ],
+      "tests": [
+        "tests/week-09/retry-policy.test.ts",
+        "tests/week-09/client-retry.test.ts",
+        "tests/week-09/lost-response.test.ts"
+      ],
+      "reviews": [
+        "PR #21 de Abraham (ubicacion) revisado: solicito cambios y luego aprobo",
+        "PR #24 de Lizbeth (inyeccion de fallos) revisado y aprobado"
+      ],
+      "prediction": "Los errores transitorios permitirian reintentos limitados a 4 intentos y una respuesta perdida se resolveria repitiendo la misma clave, con un solo evento en el historial del servidor.",
+      "command": "npx jest --no-watchman --ci --runInBand tests/week-09/retry-policy.test.ts tests/week-09/client-retry.test.ts tests/week-09/lost-response.test.ts",
+      "observedResult": "Test Suites: 3 passed, 3 total; Tests: 16 passed, 16 total",
+      "explanation": "Implemento planRetry y su uso en IncidentClient con limites, Retry-After, misma clave en cada reintento y registros sanitizados; escribio las pruebas de respuesta perdida y docs/resilience-policy.md. Uso Claude Code como asistencia y verifico con los comandos indicados."
+    },
+    {
+      "studentId": "3522110221",
+      "commitShas": [
+        "dffb98a5541b66388e083820401123e044f358eb"
+      ],
+      "files": [
+        "tests/week-09/fault-injection.test.ts"
+      ],
+      "tests": [
+        "tests/week-09/fault-injection.test.ts"
+      ],
+      "reviews": [
+        "PR #25 de Emmanuel (ejecuciones reales en docs/resilience-policy.md) revisado, confirmado, aprobado y mergeado"
+      ],
+      "prediction": "Las pruebas de inyeccion de fallos demostrarian que CampusOps controla los reintentos, evita efectos duplicados y mantiene disponible la ubicacion manual cuando falla el proveedor.",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/fault-injection.test",
+      "observedResult": "Tests: 1 passed, 1 total. Proveedor caido: ubicacion manual sin coordenadas. Cierre perdido: 2 intentos y 1 evento close. Ejecucion real con Nominatim (2026-11-03T03:33:22.190Z): source provider, 1153 ms.",
+      "explanation": "Escribio la prueba integral de inyeccion de fallos con el codigo real del equipo y repitio la ejecucion real con el proveedor. Preparo una primera version de reportes y evidencias. Uso ChatGPT como apoyo para documentacion y evidencias."
+    }
+  ]
+}

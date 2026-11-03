@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "commitSha": "1c5477abd7d894d3b8f9e0304bf4b1764357be31",
+  "generatedAt": "2026-11-03T05:08:00Z",
+  "checks": [
+    {
+      "id": "geocoding-success",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/location.test",
+      "evidence": "Tests: 9 passed, 9 total. valid geocoding is accepted from the provider: el resultado queda con source provider."
+    },
+    {
+      "id": "geocoding-incomplete-or-invalid",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/location.test",
+      "evidence": "incomplete or invalid coordinates fall back to the manual label: se conserva la etiqueta manual, sin coordenadas."
+    },
+    {
+      "id": "geocoding-timeout",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/location.test",
+      "evidence": "timeout falls back to manual without inventing coordinates: paso en 310 ms."
+    },
+    {
+      "id": "geocoding-rate-limited",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/location.test",
+      "evidence": "429 honors Retry-After and then falls back to manual: esperas de 1000, 1000 y 1000 ms, 4 solicitudes y luego ubicacion manual."
+    },
+    {
+      "id": "geocoding-disconnected",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/location.test",
+      "evidence": "disconnection falls back to manual: la desconexion no lanza excepcion a la pantalla."
+    },
+    {
+      "id": "manual-location-form",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/location-form.test.tsx",
+      "evidence": "Tests: 2 passed, 2 total. El formulario conserva el edificio escrito y avisa al usuario cuando falla el proveedor."
+    },
+    {
+      "id": "lost-resolve-response",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/lost-response.test",
+      "evidence": "Tests: 3 passed, 3 total. lost resolve response is retried with the same key and applies once: intento 1 timeout, intento 2 http_200 con duplicate true, status resolved, version 3 y 1 evento de esa operacion en history."
+    },
+    {
+      "id": "lost-close-response",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/lost-response.test",
+      "evidence": "lost close response does not duplicate the event: 2 intentos, status closed, version 4 y 1 evento close en history."
+    },
+    {
+      "id": "fault-injection-end-to-end",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/fault-injection.test",
+      "evidence": "Tests: 1 passed, 1 total, en 2652 ms. Proveedor caido: source manual y provider_unavailable, sin coordenadas, y la incidencia se crea con la etiqueta escrita. Cierre perdido: intentos timeout y http_200, duplicate true y 1 evento close."
+    }
+  ]
+}

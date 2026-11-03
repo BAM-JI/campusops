@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "commitSha": "1c5477abd7d894d3b8f9e0304bf4b1764357be31",
+  "generatedAt": "2026-11-03T05:08:00Z",
+  "policy": {
+    "maxAttempts": 4,
+    "baseDelayMs": 250,
+    "maxDelayMs": 4000,
+    "maxRetryAfterMs": 30000
+  },
+  "checks": [
+    {
+      "id": "retry-limit-attempt-4",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/retry-policy.test",
+      "evidence": "Tests: 6 passed, 6 total. stops retrying from attempt 4: sin reintento en los intentos 4, 5 y 100.",
+      "maxAttempts": 4
+    },
+    {
+      "id": "server-keeps-failing-max-requests",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/client-retry.test",
+      "evidence": "Tests: 7 passed, 7 total. a server that keeps failing receives at most 4 requests: 4 solicitudes con esperas de 250, 500 y 1000 ms y resultado server 503.",
+      "observedRequests": 4,
+      "observedWaitsMs": [250, 500, 1000]
+    },
+    {
+      "id": "retry-after-honored",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/client-retry.test",
+      "evidence": "429 waits exactly Retry-After before the next attempt: con Retry-After de 1 s, la espera registrada fue de 1000 ms.",
+      "observedWaitsMs": [1000]
+    },
+    {
+      "id": "geocoding-retry-after",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/location.test",
+      "evidence": "429 honors Retry-After and then falls back to manual: 4 solicitudes con esperas de 1000, 1000 y 1000 ms.",
+      "observedRequests": 4,
+      "observedWaitsMs": [1000, 1000, 1000]
+    },
+    {
+      "id": "progressive-backoff",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/retry-policy.test",
+      "evidence": "uses progressive backoff without Retry-After: demoras planeadas de 250, 500 y 1000 ms; todas finitas.",
+      "plannedDelayMs": [250, 500, 1000]
+    },
+    {
+      "id": "retry-after-over-limit",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/retry-policy.test",
+      "evidence": "honors Retry-After and keeps delays finite: un Retry-After de 120000 ms supera el limite de 30000 ms y no se reintenta."
+    },
+    {
+      "id": "post-without-key-not-retried",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/retry-policy.test",
+      "evidence": "never retries a POST without a stable idempotency key: retry false y requiresStableIdempotencyKey true."
+    },
+    {
+      "id": "business-errors-once",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/client-retry.test",
+      "evidence": "business errors are answered once, without retries: 403, 409 y 422 con 1 solicitud y sin esperas.",
+      "observedRequests": 1
+    },
+    {
+      "id": "lost-response-no-duplicates",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/lost-response.test",
+      "evidence": "Tests: 3 passed, 3 total. resolve perdido: 2 intentos y 1 evento en history, prueba de 1105 ms. close perdido: 2 intentos y 1 evento close, prueba de 1068 ms.",
+      "observedAttempts": 2,
+      "observedHistoryEvents": 1
+    },
+    {
+      "id": "attempt-records-sanitized",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/client-retry.test",
+      "evidence": "attempt records are sanitized: no token, actor, key or incident id: la ruta se registra como /v1/incidents/:id/actions."
+    }
+  ]
+}
