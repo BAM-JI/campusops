@@ -9,6 +9,7 @@ import type {
 import type { IncidentLocation } from '../campusops/contracts';
 import { parseRemoteResource as parseEnvelope } from '../api/incident-dto';
 import { planRetry as planRetryWithPolicy } from '../api/retry-policy';
+import { selectIncidentLocation as selectLocation } from '../location/select-incident-location';
 import { summarizeAuthEvents, type RefreshSummary } from '../auth/refresh-coordinator';
 import { deduplicateOperations as deduplicateQueuedOperations } from '../sync/deduplicate-operations';
 import { resolveSync as resolveFieldSync } from '../sync/resolve-sync';
@@ -61,9 +62,9 @@ export function reducePermissionLifecycle(
   return pending('reducePermissionLifecycle');
 }
 
-/** Week 09: see docs/CAMPUSOPS_API.md; this is not a completed solution. */
-export function selectIncidentLocation(_provider: unknown, _manualLabel: string): IncidentLocation {
-  return pending('selectIncidentLocation');
+/** Week 09: same decision the create form uses (src/location/select-incident-location.ts). */
+export function selectIncidentLocation(provider: unknown, manualLabel: string): IncidentLocation {
+  return selectLocation(provider, manualLabel);
 }
 
 // ==========================================
