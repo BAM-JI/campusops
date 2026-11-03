@@ -27,7 +27,7 @@ CampusOps separa dos adaptadores detrás del mismo puerto `GeocodingPort`:
 
 **Limitación declarada:** la app usa el doble del curso. El proveedor real se demuestra con el script y con el mismo puerto, pero **no está conectado a la pantalla**. Cambiarlo sólo requiere otro adaptador en `App.tsx`, sin tocar la UI ni el caso de uso.
 
-**Ejecución real** (hecha por Abraham en su computadora, con internet):
+**Ejecución real** (desde computadoras del equipo, con internet):
 
 ```bash
 node scripts/geocode-real-once.mjs "Biblioteca Central Universidad"
@@ -39,7 +39,7 @@ node scripts/geocode-real-once.mjs "Biblioteca Central Universidad"
 - **Duración:** 867 ms.
 - **Observación:** ante una consulta ambigua, el proveedor eligió por su cuenta el primer resultado. Por eso una etiqueta del proveedor no es una confirmación de que sea el lugar correcto: el usuario la ve en el formulario y puede cambiarla por su propia referencia.
 
-Se ejecutó una sola vez. El registro está sanitizado: sin tokens, sin actor y sin datos personales.
+Se ejecutó dos veces, con la misma consulta. Los datos de arriba son de la ejecución de Abraham. Lizbeth la repitió para sus evidencias el `2026-11-03T03:33:22.190Z`: resultado `source: provider`, la misma ubicación en Puebla y 1153 ms. Ambas respetan el límite de 1 solicitud por segundo. Los registros están sanitizados: sin tokens, sin actor y sin datos personales.
 
 ## 2. Caché
 
