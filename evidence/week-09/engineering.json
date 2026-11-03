@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "commitSha": "1c5477abd7d894d3b8f9e0304bf4b1764357be31",
+  "decision": "CampusOps reintenta solo fallas transitorias (timeout, desconexion, 408, 429 y 5xx) con planRetry: maximo 4 intentos, Retry-After respetado hasta 30 s y espera progresiva finita. Un POST solo se repite con Idempotency-Key estable, misma clave y mismo cuerpo, para que una respuesta perdida no duplique efectos. Si la geocodificacion falla o devuelve datos invalidos, continua con la ubicacion manual sin inventar coordenadas. Los errores de negocio y los limites agotados se informan al usuario como error tipado.",
+  "alternatives": [
+    "Reintentar indefinidamente todas las solicitudes: podria recuperar algunas operaciones, pero satura al servidor y deja la pantalla sin respuesta.",
+    "No reintentar nunca e informar siempre el fallo: es mas simple, pero una falla breve obliga a repetir el trabajo y una respuesta perdida queda sin resolver.",
+    "Depender solo del proveedor de geocodificacion, sin cache ni ubicacion manual: simplifica la integracion, pero bloquea el reporte cuando el proveedor falla."
+  ],
+  "tradeoff": "Beneficio: la app sigue siendo util ante fallos del proveedor, no duplica efectos y limita las solicitudes. Costo: los reintentos agregan latencia, hay mas estados y pruebas, y ante un proveedor caido la incidencia queda solo con texto, sin coordenadas. La app usa el doble del curso; Nominatim solo se usa desde el script de ejecucion real.",
+  "requirementIds": ["AC-01", "AC-02", "AC-03", "AC-04", "AC-05"],
+  "verification": [
+    {
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/retry-policy.test",
+      "result": "pass",
+      "evidence": "Tests: 6 passed, 6 total. Limite de 4 intentos, Retry-After, espera progresiva, limites configurables y POST solo con clave estable."
+    },
+    {
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/client-retry.test",
+      "result": "pass",
+      "evidence": "Tests: 7 passed, 7 total. Maximo 4 solicitudes, misma clave y cuerpo en cada reintento y registros sanitizados."
+    },
+    {
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/lost-response.test",
+      "result": "pass",
+      "evidence": "Tests: 3 passed, 3 total. resolve y close perdidos: 2 intentos, duplicate true y 1 solo evento en history."
+    },
+    {
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/location.test",
+      "result": "pass",
+      "evidence": "Tests: 9 passed, 9 total. Proveedor valido, datos invalidos, timeout, 429, desconexion y cache."
+    },
+    {
+      "command": "npx jest --no-watchman --ci --runInBand --verbose tests/week-09/fault-injection.test",
+      "result": "pass",
+      "evidence": "Tests: 1 passed, 1 total. Proveedor caido conserva la ubicacion manual y un cierre perdido se aplica una vez."
+    },
+    {
+      "command": "node scripts/geocode-real-once.mjs \"Biblioteca Central Universidad\"",
+      "result": "pass",
+      "evidence": "Dos ejecuciones reales con OpenStreetMap Nominatim, reportadas por sus autores: Abraham 2026-11-02T05:45:19.479Z, 867 ms; Lizbeth 2026-11-03T03:33:22.190Z, 1153 ms. Ambas con source provider. Detalle en docs/resilience-policy.md."
+    }
+  ],
+  "aiAssistance": "El equipo uso Claude Code y ChatGPT como apoyo para implementacion, pruebas, documentacion y evidencias. Los resultados de este archivo salen de comandos ejecutados sobre el commit indicado. No se modificaron pruebas para forzar resultados."
+}
