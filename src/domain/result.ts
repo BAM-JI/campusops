@@ -24,6 +24,12 @@ export function failure<T>(error: ApiError): ApiResult<T> {
   return { ok: false, error };
 }
 
+/** Message for a stored error kind (view states keep only the kind, never the server body). */
+export function describeErrorKind(kind: ApiError['kind']): string {
+  // describeApiError only reads `kind`; the extra fields of some kinds do not change the text.
+  return describeApiError({ kind } as ApiError);
+}
+
 /** Short, non-sensitive Spanish messages for the UI. */
 export function describeApiError(error: ApiError): string {
   switch (error.kind) {

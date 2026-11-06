@@ -9,6 +9,7 @@ import type {
 import type { IncidentLocation } from '../campusops/contracts';
 import { parseRemoteResource as parseEnvelope } from '../api/incident-dto';
 import { planRetry as planRetryWithPolicy } from '../api/retry-policy';
+import { reduceRemoteResponses as reduceActiveResponse } from '../application/remote-responses';
 import { selectIncidentLocation as selectLocation } from '../location/select-incident-location';
 import { summarizeAuthEvents, type RefreshSummary } from '../auth/refresh-coordinator';
 import { deduplicateOperations as deduplicateQueuedOperations } from '../sync/deduplicate-operations';
@@ -49,11 +50,12 @@ export function planRetry(input: Readonly<{
   return planRetryWithPolicy(input);
 }
 
-export function reduceRemoteResponses(_input: Readonly<{
+/** Week 10: same rule the screens use to ignore late answers (src/application/remote-responses.ts). */
+export function reduceRemoteResponses(input: Readonly<{
   activeRequestId: string;
   responses: readonly RemoteResponse[];
 }>): Readonly<{ state: 'success' | 'error' | 'loading'; value?: unknown; error?: string }> {
-  return pending('reduceRemoteResponses');
+  return reduceActiveResponse(input);
 }
 
 export function reducePermissionLifecycle(
