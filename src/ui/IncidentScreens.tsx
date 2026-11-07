@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import {
@@ -8,16 +8,87 @@ import {
   type GetIncidentsUseCase,
 } from '../application/incident-usecases';
 import type { LocationNotice, ResolveIncidentLocationUseCase } from '../application/location-usecases';
+import { IDLE_TRACKER, toViewState, trackRequests, type ViewState } from '../application/view-state';
 import type { Incident } from '../domain/incident';
-import { describeApiError, type ApiError } from '../domain/result';
+import { describeApiError, describeErrorKind, type ApiError } from '../domain/result';
 import type { CampusRole } from '../campusops/contracts';
 
 type Identity = Readonly<{ actorId: string; role: CampusRole }>;
 
-type ListState =
-  | Readonly<{ kind: 'loading' }>
-  | Readonly<{ kind: 'ready'; items: readonly Incident[] }>
-  | Readonly<{ kind: 'error'; error: ApiError }>;
+const asIncidents = (value: unknown) => value as readonly Incident[];
+const asIncident = (value: unknown) => value as Incident;
+const isEmptyList = (items: readonly Incident[]) => items.length === 0;
+
+let requestSequence = 0;
+const nextRequestId = (prefix: string) => `${prefix}-${++requestSequence}`;
+
+/**
+ * Message, live-region text and recovery action for every non-success view state.
+ * Loading always ends: the client has its own timeout and bounded retries, and the user can cancel.
+ */
+function StatusView({
+  state,
+  subject,
+  onRetry,
+  onCancel,
+}: Readonly<{
+  state: ViewState<unknown>;
+  subject: string;
+  onRetry: () => void;
+  onCancel: () => void;
+}>) {
+  switch (state.kind) {
+    case 'loading':
+      return (
+        <View accessibilityState={{ busy: true }} accessibilityLabel={`Cargando ${subject}`} style={styles.status}>
+          <Text accessibilityLiveRegion="polite">Cargando {subject}…</Text>
+          <StateButton label={`Cancelar carga de ${subject}`} text="Cancelar" onPress={onCancel} />
+        </View>
+      );
+    case 'empty':
+      return (
+        <View style={styles.status}>
+          <Text accessibilityLiveRegion="polite">No hay {subject} visibles para tu perfil.</Text>
+          <StateButton label={`Actualizar ${subject}`} text="Actualizar" onPress={onRetry} />
+        </View>
+      );
+    case 'offline':
+      return (
+        <View style={styles.status}>
+          <Text accessibilityRole="alert" accessibilityLiveRegion="assertive">
+            Sin conexión con el servidor. Revisa tu red y vuelve a intentar.
+          </Text>
+          <StateButton label={`Reintentar cargar ${subject}`} text="Reintentar" onPress={onRetry} />
+        </View>
+      );
+    case 'error':
+      return (
+        <View style={styles.status}>
+          <Text accessibilityRole="alert" accessibilityLiveRegion="assertive">
+            {describeErrorKind(state.error)}
+          </Text>
+          <StateButton label={`Reintentar cargar ${subject}`} text="Reintentar" onPress={onRetry} />
+        </View>
+      );
+    case 'cancelled':
+      return (
+        <View style={styles.status}>
+          <Text accessibilityLiveRegion="polite">Carga cancelada.</Text>
+          <StateButton label={`Volver a cargar ${subject}`} text="Volver a cargar" onPress={onRetry} />
+        </View>
+      );
+    default:
+      return null;
+  }
+}
+
+function StateButton({ label, text, onPress }: Readonly<{ label: string; text: string; onPress: () => void }>) {
+  return (
+    <TouchableOpacity style={styles.button} accessibilityRole="button" accessibilityLabel={label} onPress={onPress}>
+      <Text style={styles.buttonText}>{text}</Text>
+    </TouchableOpacity>
+  );
+}
 
 interface Props {
   identity: Identity;
@@ -38,8 +109,6 @@ export function IncidentListAndDetailScreen({
   resolveLocationUseCase,
   onUnauthorized,
 }: Props) {
-  const [list, setList] = useState<ListState>({ kind: 'loading' });
-  const [selected, setSelected] = useState<Incident | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   const handleError = useCallback(
@@ -50,60 +119,90 @@ export function IncidentListAndDetailScreen({
     [onUnauthorized],
   );
 
-  const [reloadCount, setReloadCount] = useState(0);
-
-  useEffect(() => {
-    let active = true;
+  // List: every load is a new request; an older load that answers late never replaces the newest one.
+  const [listTracker, dispatchList] = useReducer(trackRequests, IDLE_TRACKER);
+  const loadList = useCallback(() => {
+    const requestId = nextRequestId('list');
+    dispatchList({ type: 'request', requestId });
     void getIncidentsUseCase.execute().then((result) => {
-      if (!active) return;
-      if (result.ok) setList({ kind: 'ready', items: result.value });
-      else {
-        setList({ kind: 'error', error: result.error });
-        handleError(result.error);
-      }
+      dispatchList({ type: 'response', response: result.ok ? { requestId, value: result.value } : { requestId, error: result.error.kind } });
+      if (!result.ok && result.error.kind === 'unauthorized') onUnauthorized();
     });
-    return () => {
-      active = false;
-    };
-  }, [getIncidentsUseCase, handleError, reloadCount]);
+  }, [getIncidentsUseCase, onUnauthorized]);
 
-  const reload = () => setReloadCount((count) => count + 1);
+  // First load once the screen is shown (the request event and the answer arrive asynchronously).
+  useEffect(() => {
+    const timer = setTimeout(loadList, 0);
+    return () => clearTimeout(timer);
+  }, [loadList]);
 
-  const handleSelect = async (id: string) => {
-    const result = await getIncidentDetailUseCase.execute(id);
-    if (result.ok) setSelected(result.value);
-    else handleError(result.error);
+  // Detail: the selected incident is the active request; answers of previous selections are ignored.
+  const [detailTracker, dispatchDetail] = useReducer(trackRequests, IDLE_TRACKER);
+  const lastSelection = useRef<string | null>(null);
+  const handleSelect = (id: string) => {
+    lastSelection.current = id;
+    const requestId = nextRequestId(`detail-${id}`);
+    dispatchDetail({ type: 'request', requestId });
+    void getIncidentDetailUseCase.execute(id).then((result) => {
+      dispatchDetail({ type: 'response', response: result.ok ? { requestId, value: result.value } : { requestId, error: result.error.kind } });
+      if (!result.ok && result.error.kind === 'unauthorized') onUnauthorized();
+    });
   };
 
-  if (selected) {
+  // Before the first request starts (one tick) the list is already shown as loading, never blank.
+  const rawListView = toViewState(listTracker, asIncidents, isEmptyList);
+  const listView: ViewState<readonly Incident[]> = rawListView.kind === 'idle' ? { kind: 'loading' } : rawListView;
+  const detailView = toViewState(detailTracker, asIncident);
+
+  if (detailView.kind !== 'idle') {
     return (
       <View style={styles.detailCard}>
-        <Text style={styles.title}>Incidencia {selected.id}</Text>
-        <Text>Estado: {selected.status}</Text>
-        <Text>Categoría: {selected.category}</Text>
-        <Text>Prioridad: {selected.priority}</Text>
-        <Text>Ubicación: {selected.location}</Text>
-        <Text>Descripción: {selected.description}</Text>
-        <Text>Versión: {selected.version}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => setSelected(null)}>
-          <Text style={styles.buttonText}>Regresar a la lista</Text>
-        </TouchableOpacity>
+        {detailView.kind === 'success' ? (
+          <View accessibilityLabel={`Detalle de la incidencia ${detailView.value.id}`}>
+            <Text style={styles.title} accessibilityRole="header" testID="detail-title">
+              Incidencia {detailView.value.id}
+            </Text>
+            <Text>Estado: {detailView.value.status}</Text>
+            <Text>Categoría: {detailView.value.category}</Text>
+            <Text>Prioridad: {detailView.value.priority}</Text>
+            <Text>Ubicación: {detailView.value.location}</Text>
+            <Text>Descripción: {detailView.value.description}</Text>
+            <Text>Versión: {detailView.value.version}</Text>
+          </View>
+        ) : (
+          <StatusView
+            state={detailView}
+            subject="la incidencia"
+            onRetry={() => lastSelection.current && handleSelect(lastSelection.current)}
+            onCancel={() => dispatchDetail({ type: 'cancel' })}
+          />
+        )}
+        <StateButton label="Regresar a la lista de incidencias" text="Regresar a la lista" onPress={() => dispatchDetail({ type: 'clear' })} />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Incidencias visibles para {identity.role}</Text>
-      {message ? <Text testID="incident-message">{message}</Text> : null}
-      {list.kind === 'loading' ? <Text>Cargando…</Text> : null}
-      {list.kind === 'ready' && list.items.length === 0 ? <Text>No hay incidencias visibles.</Text> : null}
-      {list.kind === 'ready' ? (
+      <Text style={styles.header} accessibilityRole="header">
+        Incidencias visibles para {identity.role}
+      </Text>
+      {message ? (
+        <Text testID="incident-message" accessibilityLiveRegion="polite">
+          {message}
+        </Text>
+      ) : null}
+      {listView.kind === 'success' ? (
         <FlatList
-          data={list.items}
+          data={listView.value}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.card} onPress={() => void handleSelect(item.id)}>
+            <TouchableOpacity
+              style={styles.card}
+              accessibilityRole="button"
+              accessibilityLabel={`Abrir incidencia ${item.id}, estado ${item.status}`}
+              onPress={() => handleSelect(item.id)}
+            >
               <Text style={styles.itemTitle}>
                 {item.id} · {item.category}
               </Text>
@@ -111,13 +210,15 @@ export function IncidentListAndDetailScreen({
             </TouchableOpacity>
           )}
         />
-      ) : null}
+      ) : (
+        <StatusView state={listView} subject="incidencias" onRetry={loadList} onCancel={() => dispatchList({ type: 'cancel' })} />
+      )}
       {identity.role === 'reporter' ? (
         <CreateIncidentForm
           role={identity.role}
           useCase={createIncidentUseCase}
           resolveLocation={resolveLocationUseCase}
-          onCreated={reload}
+          onCreated={loadList}
           onError={handleError}
         />
       ) : null}
@@ -248,6 +349,7 @@ const styles = StyleSheet.create({
   itemTitle: { fontSize: 16, fontWeight: '600' },
   title: { fontSize: 18, fontWeight: 'bold', marginBottom: 8 },
   form: { gap: 8, marginTop: 12 },
+  status: { gap: 8 },
   input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 6, padding: 8 },
   button: { padding: 10, backgroundColor: '#007bff', borderRadius: 6 },
   buttonText: { color: '#fff', textAlign: 'center' },
