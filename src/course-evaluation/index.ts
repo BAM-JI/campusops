@@ -14,6 +14,7 @@ import { selectIncidentLocation as selectLocation } from '../location/select-inc
 import { summarizeAuthEvents, type RefreshSummary } from '../auth/refresh-coordinator';
 import { deduplicateOperations as deduplicateQueuedOperations } from '../sync/deduplicate-operations';
 import { resolveSync as resolveFieldSync } from '../sync/resolve-sync';
+import { redactForTelemetry as redactSensitiveData } from '../observability/redact';
 
 function pending(name: string): never {
   throw new Error(`${name} must be implemented in the assigned week`);
@@ -70,54 +71,12 @@ export function selectIncidentLocation(provider: unknown, manualLabel: string): 
 }
 
 // ==========================================
-// Semana 4: Sanitización para Telemetría
+// Semana 10: Sanitización para Telemetría
 // ==========================================
 
-const SENSITIVE_KEYS = new Set([
-  'authorization',
-  'password',
-  'token',
-  'accesstoken',
-  'refreshtoken',
-  'email',
-  'displayname',
-  'name',
-  'userid',
-  'reporterid',
-  'technicianid',
-  'assignedtechnicianid',
-  'location',
-  'latitude',
-  'longitude',
-  'photos',
-  'evidence',
-  'internalcomments',
-  'assignmenthistory'
-]);
-
-function normalizeKey(key: string): string {
-  return key.toLowerCase().replace(/[-_]/g, '');
-}
-
+/** Delegates to the application's safe telemetry sanitizer. */
 export function redactForTelemetry(input: unknown): unknown {
-  if (input === null || typeof input !== 'object') {
-    return input;
-  }
-
-  if (Array.isArray(input)) {
-    return input.map((item) => redactForTelemetry(item));
-  }
-
-  const result: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(input as Record<string, unknown>)) {
-    const normalized = normalizeKey(key);
-    if (SENSITIVE_KEYS.has(normalized)) {
-      result[key] = '[REDACTED]';
-    } else {
-      result[key] = redactForTelemetry(value);
-    }
-  }
-  return result;
+  return redactSensitiveData(input);
 }
 
 /** Week 05: envelope validation shared with the HTTP client (src/api/incident-dto.ts). */
