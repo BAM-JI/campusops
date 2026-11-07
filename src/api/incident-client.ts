@@ -4,6 +4,11 @@ import { failure, success, type ApiResult } from '../domain/result';
 import { DEFAULT_TIMEOUT_MS, errorFromStatus, sendRequest, type FetchLike, type RawResponse } from './http';
 import { parseIncident, parseIncidentList, parseWriteResult } from './incident-dto';
 import { DEFAULT_RETRY_POLICY, planRetry, type RetryPolicyConfig } from './retry-policy';
+import {
+  createCorrelationId,
+  createTelemetry,
+  type TelemetrySink,
+} from '../observability/telemetry';
 
 export type IncidentClientOptions = Readonly<{
   baseUrl: string;
@@ -14,6 +19,8 @@ export type IncidentClientOptions = Readonly<{
   scenario?: string;
   /** Enables bounded retries (week 9). Omitted: every request is sent exactly once. */
   retry?: RetryOptions;
+  /** Optional destination for sanitized telemetry events. */
+  telemetrySink?: TelemetrySink;
 }>;
 
 /** Sanitized record of one attempt: no tokens, actor, body, location or incident id. */
@@ -127,8 +134,24 @@ export class IncidentClient implements IIncidentRepository {
     body?: Readonly<Record<string, unknown>>,
     idempotencyKey?: string,
   ): Promise<ApiResult<RawResponse>> {
+    const correlationId = createCorrelationId();
+    const telemetry = this.options.telemetrySink
+      ? createTelemetry(this.options.telemetrySink)
+      : undefined;
     const retry = this.options.retry;
-    if (!retry) return this.attemptOnce(method, path, body, idempotencyKey);
+    if (!retry) {
+      const startedAt = Date.now();
+      const result = await this.attemptOnce(method, path, body, idempotencyKey);
+      telemetry?.logEvent({
+        event: 'incident.request.attempt',
+        correlationId,
+        route: routeTemplate(path),
+        attempt: 1,
+        outcome: outcomeOf(result),
+        durationMs: Math.max(0, Date.now() - startedAt),
+      });
+      return result;
+    }
     const now = retry.now ?? (() => Date.now());
     const sleep = retry.sleep ?? ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
     for (let attempt = 1; ; attempt += 1) {
@@ -155,6 +178,14 @@ export class IncidentClient implements IIncidentRepository {
         outcome: outcomeOf(result),
         retry: decision.retry,
         delayMs: decision.retry ? decision.delayMs : 0,
+        durationMs: Math.max(0, now() - startedAt),
+      });
+      telemetry?.logEvent({
+        event: 'incident.request.attempt',
+        correlationId,
+        route: routeTemplate(path),
+        attempt,
+        outcome: outcomeOf(result),
         durationMs: Math.max(0, now() - startedAt),
       });
       if (!decision.retry) return result;
