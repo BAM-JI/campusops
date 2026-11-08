@@ -87,8 +87,26 @@ describe('week 08 migration schema 1 -> 2', () => {
     ['after the new schema is written but before cleanup', 'removeItem', MIGRATION_MARKER_KEY],
   ] as const)('app killed %s is recovered on the next start', async (_label, method, key) => {
     const directory = await seedLegacy();
-    void migrateDatabase(withFault(createFileStorage(directory), { method, key, mode: 'hang' }), options);
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    const faulty = withFault(createFileStorage(directory), { method, key, mode: 'hang' });
+    // Wait until the migration actually reaches the write that hangs (the "crash"), not a fixed time:
+    // under load a fixed sleep could read the files before the migration got there.
+    let reached!: () => void;
+    const crashed = new Promise<void>((resolve) => {
+      reached = resolve;
+    });
+    const watched: KeyValueStorage = {
+      getItem: (name) => faulty.getItem(name),
+      setItem: (name, value) => {
+        if (method === 'setItem' && name === key) reached();
+        return faulty.setItem(name, value);
+      },
+      removeItem: (name) => {
+        if (method === 'removeItem' && name === key) reached();
+        return faulty.removeItem(name);
+      },
+    };
+    void migrateDatabase(watched, options);
+    await crashed;
     const afterCrash = await snapshot(createFileStorage(directory));
 
     const reopened = await openLocalDatabase(createFileStorage(directory), options);
