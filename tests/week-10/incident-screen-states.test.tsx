@@ -54,8 +54,13 @@ async function show(repository: IIncidentRepository, onUnauthorized: () => void 
 }
 
 test('loading ends in success with accessible list items', async () => {
-  const screen = await show(repositoryWith({}));
+  // The answer is held until the loading state was observed, so the check does not depend on timing.
+  const answer = deferred<ApiResult<readonly Incident[]>>();
+  const screen = await show(repositoryWith({ getAll: () => answer.promise }));
   await waitFor(() => expect(screen.getByLabelText('Cargando incidencias')).toBeTruthy());
+  await act(async () => {
+    answer.resolve(success([incident('campus-inc-001'), incident('campus-inc-002')]));
+  });
   await waitFor(() => expect(screen.getByLabelText('Abrir incidencia campus-inc-001, estado assigned')).toBeTruthy());
   expect(screen.queryByLabelText('Cargando incidencias')).toBeNull();
 });
